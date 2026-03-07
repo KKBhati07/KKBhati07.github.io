@@ -47,8 +47,9 @@
                 <p>
                     Full-stack engineer experienced in building production-grade systems with a 
                     strong focus on backend architecture, scheduling logic, and scalable API design. 
-                    I enjoy solving real-world allocation and optimization problems while maintaining 
-                    clean and maintainable codebases.
+                    I design and deploy distributed services (custom domains, SSL, CORS/CSP, containerized 
+                    runtimes) and enjoy solving real-world allocation and optimization problems while 
+                    maintaining clean and maintainable codebases.
                 </p>
             </div>
         </section>
@@ -90,7 +91,7 @@
                     </p>
                   </article>
 
-                                  <!-- MarketMate -->
+                <!-- MarketMate -->
                 <article class="project-card">
                     <h3>MarketMate</h3>
                     <div class="project-media-grid">
@@ -114,27 +115,39 @@
                         </figure>
                     </div>
                     <p>
-                        OLX-type platform for buying and selling used goods, built with a 
-                        full-stack architecture and session-based authentication.
+                        Production-grade classifieds platform (OLX-style) for buying and selling used goods. 
+                        Built with a distributed, multi-service architecture and deployed on custom domains 
+                        with subdomain routing, SSL, and CDN-backed frontends.
                     </p>
                     <ul class="project-highlights">
-                        <li>Developed Angular frontend with modular component architecture</li>
-                        <li>Built REST APIs using Spring Boot</li>
-                        <li>Implemented session-based authentication and role-based access</li>
-                        <li>Admin panel for product and user management</li>
+                        <li>Spring Boot REST API and Angular SSR app in an Nx monorepo; separate NestJS real-time chat service</li>
+                        <li>JWT authentication via httpOnly cookies; PostgreSQL session persistence; Redis validation and caching</li>
+                        <li>AWS S3 for media; Dockerized services with multi-stage builds and Docker Compose orchestration</li>
+                        <li>Custom domain setup (api / app / admin subdomains), CORS and CSP configured for production</li>
+                        <li>Backend &amp; SSR on Render; monitoring with Prometheus and Grafana</li>
                     </ul>
-                    <p class="project-tech">
-                        <strong>Tech:</strong> Angular, Spring Boot, PostgreSQL
+                    <h4 style="margin-top:1rem;">Architecture</h4>
+                    <p style="margin-top:0.35rem;">
+                        Separated services: <strong>api.marketmatecloud.in</strong> (Spring Boot), 
+                        <strong>app.marketmatecloud.in</strong> (Angular SSR), 
+                        <strong>admin.marketmatecloud.in</strong> (Nx-based admin). 
+                        DNS, SSL, and cross-origin communication tuned for secure, scalable delivery.
                     </p>
-                    <div style="margin-top: 0.8rem; color: var(--text-subtle);">
-                        <strong>Repos:</strong>
-                        <a href="https://github.com/KKBhati07/TheMarketMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600; margin-left: 0.4rem;">Frontend</a>
-                        <span style="margin: 0 0.35rem;">|</span>
-                        <a href="https://github.com/KKBhati07/SpringMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Backend</a>
-                        <span style="margin: 0 0.35rem;">|</span>
-                        <a href="https://github.com/KKBhati07/mm-infra" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Infra</a>
-                        <span style="margin: 0 0.35rem;">|</span>
-                        <a href="https://github.com/KKBhati07/mm-chat-service" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Chat</a>
+                    <p class="project-tech">
+                        <strong>Tech:</strong> Angular, Spring Boot, NestJS, Nx, PostgreSQL, Redis, AWS S3, Docker, Docker Compose, JWT (httpOnly), Render, Netlify, Prometheus, Grafana
+                    </p>
+                    <div style="margin-top: 0.8rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;">
+                        <a class="button button-secondary button-sm" href="https://app.marketmatecloud.in" target="_blank" rel="noopener">Live Demo</a>
+                        <span style="color: var(--text-subtle);">
+                            <strong>Repos:</strong>
+                            <a href="https://github.com/KKBhati07/TheMarketMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600; margin-left: 0.4rem;">Frontend</a>
+                            <span style="margin: 0 0.35rem;">|</span>
+                            <a href="https://github.com/KKBhati07/SpringMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Backend</a>
+                            <span style="margin: 0 0.35rem;">|</span>
+                            <a href="https://github.com/KKBhati07/mm-infra" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Infra</a>
+                            <span style="margin: 0 0.35rem;">|</span>
+                            <a href="https://github.com/KKBhati07/mm-chat-service" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Chat</a>
+                        </span>
                     </div>
                 </article>
 
@@ -176,15 +189,17 @@
           
               <div style="margin-top:1.5rem;">
           
-                <p><strong>Frontend:</strong> Angular, TypeScript, SCSS</p>
+                <p><strong>Frontend:</strong> Angular, TypeScript, SCSS, Nx monorepo</p>
           
-                <p><strong>Backend:</strong> Spring Boot, REST APIs, JPA, Hibernate</p>
+                <p><strong>Backend:</strong> Spring Boot, NestJS, REST APIs, JPA, Hibernate</p>
           
-                <p><strong>Database:</strong> PostgreSQL</p>
+                <p><strong>Database &amp; Cache:</strong> PostgreSQL, Redis</p>
           
-                <p><strong>DevOps & Tools:</strong> Docker, GitHub Actions, Maven</p>
+                <p><strong>Infrastructure &amp; DevOps:</strong> Docker, Docker Compose, multi-stage builds, GitHub Actions, Maven</p>
           
-                <p><strong>Optimization & Scheduling:</strong> Greedy Algorithms, Vehicle Routing Problem (VRP), Timefold</p>
+                <p><strong>Deployment &amp; Observability:</strong> Render, Netlify, custom domains &amp; SSL, CORS/CSP, Prometheus, Grafana</p>
+          
+                <p><strong>Optimization &amp; Scheduling:</strong> Greedy Algorithms, Vehicle Routing Problem (VRP), Timefold</p>
           
               </div>
             </div>

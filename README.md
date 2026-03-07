@@ -26,11 +26,13 @@ Backend scheduling platform designed for automated resource allocation.
 
 ### MarketMate
 
-OLX-type full-stack platform for buying and selling used products.
+Production-grade classifieds platform (OLX-style) with distributed architecture, deployed on custom subdomains.
 
-- Angular frontend
-- Spring Boot backend
-- Session-based authentication
+- **Architecture:** Spring Boot REST API (api), Angular SSR app (app), Nx admin panel (admin), NestJS chat service
+- **Infra:** Custom domains & SSL, CORS/CSP, JWT httpOnly cookies, PostgreSQL, Redis, AWS S3
+- **Deployment:** Backend & SSR on Render; Docker Compose; Prometheus & Grafana
+- **Stack:** Angular, Spring Boot, NestJS, Nx, PostgreSQL, Redis, Docker, Render, Netlify
+- **Live:** https://app.marketmatecloud.in
 
 ### Alphabet Music API
 
