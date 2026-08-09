@@ -322,8 +322,8 @@ button:focus-visible,
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    padding: 0.65rem 1.35rem;
-    border-radius: var(--radius-sm);
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 600;
@@ -411,8 +411,9 @@ button:focus-visible,
 
 .button-sm {
     min-height: 38px;
-    padding: 0.4rem 0.9rem;
+    padding: 0.45rem 1.15rem;
     font-size: 0.875rem;
+    border-radius: 999px;
 }
 
 .button:disabled,
@@ -610,6 +611,8 @@ button:focus-visible,
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 999px;
+    cursor: default;
+    user-select: none;
     transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 
