@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Kanishk Bhati — Full-Stack Engineer portfolio: backend systems, distributed projects, and engineering notes on architecture, reliability, and performance.">
     <title>Kanishk Bhati | Full-Stack Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -27,23 +30,31 @@
         <!-- Intro -->
         <section id="intro" class="intro-section">
             <div class="content-wrap intro-layout">
-                <p class="intro-label">Portfolio</p>
-                <h1>Kanishk Bhati</h1>
-                <p class="intro-title">Full-Stack Engineer</p>
-                <p class="intro-description">
+                <p class="intro-label hero-animate hero-animate--1">Portfolio</p>
+                <h1 class="hero-animate hero-animate--2">Kanishk Bhati</h1>
+                <p class="intro-title hero-animate hero-animate--3">Full-Stack Engineer</p>
+                <p class="intro-description hero-animate hero-animate--4">
                     I build scalable web applications and production-grade backend systems 
                     focused on optimization, automation, and clean architecture.
                 </p>
-                <div class="intro-actions">
+                <div class="intro-actions hero-animate hero-animate--5">
                     <a class="button button-primary" href="#projects">View Projects</a>
                     <a class="button button-secondary" href="assets/resume/kanishk_bhati_resume_2026.pdf" download>Download Resume</a>
                 </div>
+                <ul class="hero-chips hero-animate hero-animate--6" aria-label="Focus areas">
+                    <li>Spring Boot</li>
+                    <li>PostgreSQL</li>
+                    <li>Redis</li>
+                    <li>Distributed systems</li>
+                    <li>Timefold</li>
+                </ul>
             </div>
         </section>
 
         <!-- About -->
         <section id="about" class="section-block">
-            <div class="content-wrap">
+            <div class="content-wrap reveal">
+                <span class="section-eyebrow">About</span>
                 <h2>About Me</h2>
                 <p>
                     Full-stack engineer experienced in building production-grade systems with a 
@@ -58,10 +69,13 @@
         <!-- Projects -->
         <section id="projects" class="section-block">
             <div class="content-wrap">
-                <h2>Projects</h2>
+                <div class="reveal">
+                    <span class="section-eyebrow">Work</span>
+                    <h2>Projects</h2>
+                </div>
 
                 <!-- Auto Planner -->
-                <article class="project-card">
+                <article class="project-card reveal">
                     <h3>Intelligent Auto Planner (Confidential Client Project)</h3>
 
                     <p>
@@ -95,9 +109,14 @@
                         </li>
                     </ol>
 
-                    <p class="project-tech">
-                        <strong>Tech:</strong> Spring Boot, PostgreSQL, Docker, GitHub Actions, Timefold
-                    </p>
+                    <p class="project-tech"><strong>Tech</strong></p>
+                    <ul class="tech-tags" aria-label="Technologies used">
+                        <li>Spring Boot</li>
+                        <li>PostgreSQL</li>
+                        <li>Docker</li>
+                        <li>GitHub Actions</li>
+                        <li>Timefold</li>
+                    </ul>
 
                     <p class="project-confidential">
                         Due to confidentiality, source code and internal system details are not publicly available.
@@ -105,7 +124,7 @@
                 </article>
 
                 <!-- MarketMate -->
-                <article id="marketmate" class="project-card">
+                <article id="marketmate" class="project-card reveal">
                     <h3>MarketMate</h3>
                     <div class="project-media-grid">
                         <figure class="project-media-item">
@@ -152,11 +171,26 @@
                         <li>Custom domain setup (api / app / admin subdomains), CORS and CSP configured for production</li>
                         <li>Backend &amp; SSR on Render; monitoring with Prometheus and Grafana</li>
                     </ul>
-                    <p class="project-tech">
-                        <strong>Tech:</strong> Angular, Spring Boot, NestJS, Nx, PostgreSQL, Redis, AWS S3, AWS SES, Docker, Docker Compose, JWT (httpOnly), Resilience4j, Render, Netlify, Prometheus, Grafana
-                    </p>
+                    <p class="project-tech"><strong>Tech</strong></p>
+                    <ul class="tech-tags" aria-label="Technologies used">
+                        <li>Angular</li>
+                        <li>Spring Boot</li>
+                        <li>NestJS</li>
+                        <li>Nx</li>
+                        <li>PostgreSQL</li>
+                        <li>Redis</li>
+                        <li>AWS S3</li>
+                        <li>AWS SES</li>
+                        <li>Docker</li>
+                        <li>Docker Compose</li>
+                        <li>JWT (httpOnly)</li>
+                        <li>Render</li>
+                        <li>Netlify</li>
+                        <li>Prometheus</li>
+                        <li>Grafana</li>
+                    </ul>
                     <div class="project-links">
-                        <a class="button button-secondary button-sm" href="https://app.marketmatecloud.in" target="_blank" rel="noopener">Live Demo</a>
+                        <a class="button button-primary button-sm" href="https://app.marketmatecloud.in" target="_blank" rel="noopener">Live Demo</a>
                         <span class="repo-links">
                             <strong>Repos:</strong>
                             <a href="https://github.com/KKBhati07/TheMarketMate" target="_blank" rel="noopener">Frontend</a>
@@ -171,7 +205,7 @@
                 </article>
 
                 <!-- Alphabet Music API -->
-                <article class="project-card">
+                <article class="project-card reveal">
                     <h3>Alphabet Music API</h3>
                     <div class="project-media-grid">
                         <figure class="project-media-item">
@@ -189,9 +223,15 @@
                         <li>Designed API flows for efficient music data handling</li>
                         <li>Connected Android client with backend services and persistence layer</li>
                     </ul>
-                    <p class="project-tech">
-                        <strong>Tech:</strong> Node.js, Express.js, MongoDB, Multer, JWT, Java
-                    </p>
+                    <p class="project-tech"><strong>Tech</strong></p>
+                    <ul class="tech-tags" aria-label="Technologies used">
+                        <li>Node.js</li>
+                        <li>Express.js</li>
+                        <li>MongoDB</li>
+                        <li>Multer</li>
+                        <li>JWT</li>
+                        <li>Java</li>
+                    </ul>
                     <div class="project-links">
                         <span class="repo-links">
                             <strong>GitHub:</strong>
@@ -214,14 +254,17 @@
         -->
         <section id="engineering-notes" class="section-block">
             <div class="content-wrap">
-                <h2>Engineering Notes</h2>
-                <p>
-                    Notes from building backend and distributed systems — covering architecture decisions,
-                    performance, reliability, and lessons from real engineering work.
-                </p>
+                <div class="reveal">
+                    <span class="section-eyebrow">Writing</span>
+                    <h2>Engineering Notes</h2>
+                    <p class="section-lead">
+                        Notes from building backend and distributed systems — covering architecture decisions,
+                        performance, reliability, and lessons from real engineering work.
+                    </p>
+                </div>
 
                 <div class="notes-grid">
-                    <article class="note-card">
+                    <article class="note-card reveal">
                         <p class="note-category">Authentication &amp; Backend Architecture</p>
                         <h3>JWT + Redis Session Validation</h3>
                         <p>
@@ -233,7 +276,7 @@
                         </p>
                     </article>
 
-                    <article class="note-card">
+                    <article class="note-card reveal">
                         <p class="note-category">Reliability Engineering</p>
                         <h3>Retry vs Circuit Breaker vs Fallback</h3>
                         <p>
@@ -246,7 +289,7 @@
                         </p>
                     </article>
 
-                    <article class="note-card">
+                    <article class="note-card reveal">
                         <p class="note-category">AWS &amp; Backend Architecture</p>
                         <h3>S3 Presigned Uploads</h3>
                         <p>
@@ -259,7 +302,7 @@
                         </p>
                     </article>
 
-                    <article class="note-card">
+                    <article class="note-card reveal">
                         <p class="note-category">Optimization &amp; Backend Systems</p>
                         <h3>Constraint-Based Scheduling</h3>
                         <p>
@@ -272,7 +315,7 @@
                         </p>
                     </article>
 
-                    <article class="note-card">
+                    <article class="note-card reveal">
                         <p class="note-category">Performance Engineering</p>
                         <h3>Database Query Optimization</h3>
                         <p>
@@ -289,39 +332,96 @@
         </section>
 
         <section id="tech-stack" class="section-block">
-            <div class="content-wrap">
+            <div class="content-wrap reveal">
+                <span class="section-eyebrow">Stack</span>
                 <h2>Technical Skills</h2>
 
-                <div class="skills-list">
-                    <p><strong>Frontend:</strong> Angular, TypeScript, SCSS, Nx monorepo</p>
-                    <p><strong>Backend:</strong> Spring Boot, NestJS, REST APIs, JPA, Hibernate</p>
-                    <p><strong>Database &amp; Cache:</strong> PostgreSQL, Redis</p>
-                    <p><strong>Infrastructure &amp; DevOps:</strong> Docker, Docker Compose, multi-stage builds, GitHub Actions, Maven, AWS SES (SDK v2), Resilience4j</p>
-                    <p><strong>Deployment &amp; Observability:</strong> Render, Netlify, custom domains &amp; SSL, CORS/CSP, Prometheus, Grafana</p>
-                    <p><strong>Optimization &amp; Scheduling:</strong> Greedy Algorithms, Vehicle Routing Problem (VRP), Timefold</p>
+                <div class="skills-grid">
+                    <div class="skill-group">
+                        <h3>Frontend</h3>
+                        <ul class="tech-tags">
+                            <li>Angular</li>
+                            <li>TypeScript</li>
+                            <li>SCSS</li>
+                            <li>Nx monorepo</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Backend</h3>
+                        <ul class="tech-tags">
+                            <li>Spring Boot</li>
+                            <li>NestJS</li>
+                            <li>REST APIs</li>
+                            <li>JPA</li>
+                            <li>Hibernate</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Database &amp; Cache</h3>
+                        <ul class="tech-tags">
+                            <li>PostgreSQL</li>
+                            <li>Redis</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Infrastructure &amp; DevOps</h3>
+                        <ul class="tech-tags">
+                            <li>Docker</li>
+                            <li>Docker Compose</li>
+                            <li>Multi-stage builds</li>
+                            <li>GitHub Actions</li>
+                            <li>Maven</li>
+                            <li>AWS SES (SDK v2)</li>
+                            <li>Resilience4j</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Deployment &amp; Observability</h3>
+                        <ul class="tech-tags">
+                            <li>Render</li>
+                            <li>Netlify</li>
+                            <li>Custom domains &amp; SSL</li>
+                            <li>CORS/CSP</li>
+                            <li>Prometheus</li>
+                            <li>Grafana</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Optimization &amp; Scheduling</h3>
+                        <ul class="tech-tags">
+                            <li>Greedy Algorithms</li>
+                            <li>Vehicle Routing Problem (VRP)</li>
+                            <li>Timefold</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact -->
         <section id="contact" class="section-block">
-            <div class="content-wrap">
+            <div class="content-wrap reveal">
+                <span class="section-eyebrow">Get in touch</span>
                 <h2>Contact</h2>
                 <ul class="contact-list">
                     <li><strong>Email:</strong> kk.bhatii.007@gmail.com</li>
                     <li>
                         <strong>GitHub:</strong> 
-                        <a href="https://github.com/KKBhati07" target="_blank">
+                        <a href="https://github.com/KKBhati07" target="_blank" rel="noopener">
                             github.com/KKBhati07
                         </a>
                     </li>
                     <li>
                         <strong>LinkedIn:</strong> 
-                        <a href="https://www.linkedin.com/in/kanishk-bhati-39ab9a23a/" target="_blank">
+                        <a href="https://www.linkedin.com/in/kanishk-bhati-39ab9a23a/" target="_blank" rel="noopener">
                             linkedin.com/in/kanishk-bhati-39ab9a23a
                         </a>
                     </li>
                 </ul>
+                <div class="contact-actions">
+                    <a class="button button-primary" href="mailto:kk.bhatii.007@gmail.com">Email Me</a>
+                    <a class="button button-outline" href="https://github.com/KKBhati07" target="_blank" rel="noopener">GitHub</a>
+                    <a class="button button-outline" href="https://www.linkedin.com/in/kanishk-bhati-39ab9a23a/" target="_blank" rel="noopener">LinkedIn</a>
+                </div>
             </div>
         </section>
     </main>
