@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kanishk Bhati - Full-Stack Engineer portfolio showcasing backend systems, full-stack projects, and engineering experience.">
+    <meta name="description" content="Kanishk Bhati — Full-Stack Engineer portfolio: backend systems, distributed projects, and engineering notes on architecture, reliability, and performance.">
     <title>Kanishk Bhati | Full-Stack Engineer</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -15,6 +15,7 @@
                 <ul class="navigation-list">
                     <li><a href="#about">About</a></li>
                     <li><a href="#projects">Projects</a></li>
+                    <li><a href="#engineering-notes">Engineering Notes</a></li>
                     <li><a href="#tech-stack">Tech Stack</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -62,37 +63,49 @@
                 <!-- Auto Planner -->
                 <article class="project-card">
                     <h3>Intelligent Auto Planner (Confidential Client Project)</h3>
-                  
+
                     <p>
-                      Designed and evolved a production-grade backend scheduling engine integrated 
+                      Designed and evolved a production-grade backend scheduling engine integrated
                       into an inspection platform to automate inspector-to-booking allocation.
                     </p>
-                  
-                    <h4 style="margin-top:1rem;">Version 1 – Heuristic-Based Allocation</h4>
-                    <ul class="project-highlights">
-                      <li>Implemented custom greedy assignment strategy using nearest-resource logic</li>
-                      <li>Location-based prioritization using geospatial filtering concepts</li>
-                      <li>Re-planning capability for previously approved bookings</li>
-                    </ul>
-                  
-                    <h4 style="margin-top:1rem;">Version 2 – Constraint Solver Optimization</h4>
-                    <ul class="project-highlights">
-                      <li>Integrated Timefold optimization engine for vehicle routing problem (VRP)</li>
-                      <li>Modeled constraints for inspection duration, travel time, and schedule limits</li>
-                      <li>Improved allocation efficiency through solver-driven optimization</li>
-                    </ul>
-                  
+
+                    <ol class="project-progression">
+                        <li>
+                            <h4>Version 1 — Heuristic / Greedy Allocation</h4>
+                            <ul class="project-highlights">
+                                <li>Implemented custom greedy assignment strategy using nearest-resource logic</li>
+                                <li>Location-based prioritization using geospatial filtering concepts</li>
+                                <li>Re-planning capability for previously approved bookings</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4>Version 2 — Constraint-Based Optimization (Timefold)</h4>
+                            <ul class="project-highlights">
+                                <li>Integrated Timefold optimization engine for vehicle routing problem (VRP)</li>
+                                <li>Improved allocation efficiency through solver-driven optimization</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4>Real-World Constraints</h4>
+                            <ul class="project-highlights project-highlights-inline">
+                                <li>Travel time</li>
+                                <li>Inspection duration</li>
+                                <li>Schedule limits</li>
+                            </ul>
+                        </li>
+                    </ol>
+
                     <p class="project-tech">
-                      <strong>Tech:</strong> Spring Boot, PostgreSQL, Docker, GitHub Actions, Timefold
+                        <strong>Tech:</strong> Spring Boot, PostgreSQL, Docker, GitHub Actions, Timefold
                     </p>
-                  
-                    <p style="margin-top: 0.6rem; font-style: italic; color: var(--text-subtle);">
-                      Due to confidentiality, source code and internal system details are not publicly available.
+
+                    <p class="project-confidential">
+                        Due to confidentiality, source code and internal system details are not publicly available.
                     </p>
-                  </article>
+                </article>
 
                 <!-- MarketMate -->
-                <article class="project-card">
+                <article id="marketmate" class="project-card">
                     <h3>MarketMate</h3>
                     <div class="project-media-grid">
                         <figure class="project-media-item">
@@ -115,10 +128,22 @@
                         </figure>
                     </div>
                     <p>
-                        Production-grade classifieds platform (OLX-style) for buying and selling used goods. 
-                        Built with a distributed, multi-service architecture and deployed on custom domains 
+                        Production-grade classifieds platform (OLX-style) for buying and selling used goods.
+                        Built with a distributed, multi-service architecture and deployed on custom domains
                         with subdomain routing, SSL, and CDN-backed frontends.
                     </p>
+
+                    <h4 class="project-subheading">Architecture</h4>
+                    <ul class="architecture-scan">
+                        <li><strong>api.marketmatecloud.in</strong> — Spring Boot REST API</li>
+                        <li><strong>app.marketmatecloud.in</strong> — Angular SSR frontend</li>
+                        <li><strong>admin.marketmatecloud.in</strong> — Nx-based admin</li>
+                        <li><strong>Chat service</strong> — NestJS real-time messaging</li>
+                    </ul>
+                    <p class="architecture-note">
+                        DNS, SSL, and cross-origin communication tuned for secure, scalable delivery.
+                    </p>
+
                     <ul class="project-highlights">
                         <li>Spring Boot REST API and Angular SSR app in an Nx monorepo; separate NestJS real-time chat service</li>
                         <li>JWT authentication via httpOnly cookies; PostgreSQL session persistence; Redis validation and caching</li>
@@ -127,27 +152,20 @@
                         <li>Custom domain setup (api / app / admin subdomains), CORS and CSP configured for production</li>
                         <li>Backend &amp; SSR on Render; monitoring with Prometheus and Grafana</li>
                     </ul>
-                    <h4 style="margin-top:1rem;">Architecture</h4>
-                    <p style="margin-top:0.35rem;">
-                        Separated services: <strong>api.marketmatecloud.in</strong> (Spring Boot), 
-                        <strong>app.marketmatecloud.in</strong> (Angular SSR), 
-                        <strong>admin.marketmatecloud.in</strong> (Nx-based admin). 
-                        DNS, SSL, and cross-origin communication tuned for secure, scalable delivery.
-                    </p>
                     <p class="project-tech">
-                        <strong>Tech:</strong> Angular, Spring Boot, NestJS, Nx, PostgreSQL, Redis, AWS S3, Docker, Docker Compose, JWT (httpOnly), Render, Netlify, Prometheus, Grafana
+                        <strong>Tech:</strong> Angular, Spring Boot, NestJS, Nx, PostgreSQL, Redis, AWS S3, AWS SES, Docker, Docker Compose, JWT (httpOnly), Resilience4j, Render, Netlify, Prometheus, Grafana
                     </p>
-                    <div style="margin-top: 0.8rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;">
+                    <div class="project-links">
                         <a class="button button-secondary button-sm" href="https://app.marketmatecloud.in" target="_blank" rel="noopener">Live Demo</a>
-                        <span style="color: var(--text-subtle);">
+                        <span class="repo-links">
                             <strong>Repos:</strong>
-                            <a href="https://github.com/KKBhati07/TheMarketMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600; margin-left: 0.4rem;">Frontend</a>
-                            <span style="margin: 0 0.35rem;">|</span>
-                            <a href="https://github.com/KKBhati07/SpringMate" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Backend</a>
-                            <span style="margin: 0 0.35rem;">|</span>
-                            <a href="https://github.com/KKBhati07/mm-infra" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Infra</a>
-                            <span style="margin: 0 0.35rem;">|</span>
-                            <a href="https://github.com/KKBhati07/mm-chat-service" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600;">Chat</a>
+                            <a href="https://github.com/KKBhati07/TheMarketMate" target="_blank" rel="noopener">Frontend</a>
+                            <span class="repo-sep" aria-hidden="true">|</span>
+                            <a href="https://github.com/KKBhati07/SpringMate" target="_blank" rel="noopener">Backend</a>
+                            <span class="repo-sep" aria-hidden="true">|</span>
+                            <a href="https://github.com/KKBhati07/mm-infra" target="_blank" rel="noopener">Infra</a>
+                            <span class="repo-sep" aria-hidden="true">|</span>
+                            <a href="https://github.com/KKBhati07/mm-chat-service" target="_blank" rel="noopener">Chat</a>
                         </span>
                     </div>
                 </article>
@@ -174,37 +192,116 @@
                     <p class="project-tech">
                         <strong>Tech:</strong> Node.js, Express.js, MongoDB, Multer, JWT, Java
                     </p>
-                    <div style="margin-top: 0.8rem;">
-                        <span style="color: var(--text-subtle);">Github Links:</span>
-                        <a href="https://github.com/KKBhati07/Alphabet-Music-API" target="_blank" style="color: var(--accent); font-weight: 600;">API</a>
-                        <span style="margin: 0 0.5rem; color: var(--text-subtle);">||</span>
-                        <a href="https://github.com/KKBhati07/Alphabet-Music" target="_blank" style="color: var(--accent); font-weight: 600;">Android App</a>
+                    <div class="project-links">
+                        <span class="repo-links">
+                            <strong>GitHub:</strong>
+                            <a href="https://github.com/KKBhati07/Alphabet-Music-API" target="_blank" rel="noopener">API</a>
+                            <span class="repo-sep" aria-hidden="true">|</span>
+                            <a href="https://github.com/KKBhati07/Alphabet-Music" target="_blank" rel="noopener">Android App</a>
+                        </span>
                     </div>
                 </article>
             </div>
         </section>
 
+        <!-- Engineering Notes
+             Planned detail pages (add when written; do not create empty stubs):
+             notes/retry-circuit-breaker.html
+             notes/jwt-redis-session.html
+             notes/s3-presigned-uploads.html
+             notes/constraint-scheduling.html
+             notes/database-optimization.html
+        -->
+        <section id="engineering-notes" class="section-block">
+            <div class="content-wrap">
+                <h2>Engineering Notes</h2>
+                <p>
+                    Notes from building backend and distributed systems — covering architecture decisions,
+                    performance, reliability, and lessons from real engineering work.
+                </p>
+
+                <div class="notes-grid">
+                    <article class="note-card">
+                        <p class="note-category">Authentication &amp; Backend Architecture</p>
+                        <h3>JWT + Redis Session Validation</h3>
+                        <p>
+                            Why JWT alone may not provide enough control over active sessions, and how
+                            server-side session validation can complement token-based authentication.
+                        </p>
+                        <p class="note-card-action">
+                            <a class="note-card-cta" href="notes/jwt-redis-session.html">Read Note</a>
+                        </p>
+                    </article>
+
+                    <article class="note-card">
+                        <p class="note-category">Reliability Engineering</p>
+                        <h3>Retry vs Circuit Breaker vs Fallback</h3>
+                        <p>
+                            How to think about retries, circuit breakers, and fallbacks when backend
+                            services depend on external systems.
+                        </p>
+                        <p class="note-card-action">
+                            <span class="note-card-cta" aria-disabled="true" data-note="notes/retry-circuit-breaker.html">Read Note</span>
+                            <span class="note-card-status">Coming soon</span>
+                        </p>
+                    </article>
+
+                    <article class="note-card">
+                        <p class="note-category">AWS &amp; Backend Architecture</p>
+                        <h3>S3 Presigned Uploads</h3>
+                        <p>
+                            How direct-to-S3 uploads reduce backend load, with retry handling and backend
+                            fallback for failed uploads.
+                        </p>
+                        <p class="note-card-action">
+                            <span class="note-card-cta" aria-disabled="true" data-note="notes/s3-presigned-uploads.html">Read Note</span>
+                            <span class="note-card-status">Coming soon</span>
+                        </p>
+                    </article>
+
+                    <article class="note-card">
+                        <p class="note-category">Optimization &amp; Backend Systems</p>
+                        <h3>Constraint-Based Scheduling</h3>
+                        <p>
+                            How a scheduling problem evolved from heuristic allocation toward
+                            constraint-based optimization using Timefold.
+                        </p>
+                        <p class="note-card-action">
+                            <span class="note-card-cta" aria-disabled="true" data-note="notes/constraint-scheduling.html">Read Note</span>
+                            <span class="note-card-status">Coming soon</span>
+                        </p>
+                    </article>
+
+                    <article class="note-card">
+                        <p class="note-category">Performance Engineering</p>
+                        <h3>Database Query Optimization</h3>
+                        <p>
+                            Lessons from investigating slow APIs, query efficiency, indexing, and
+                            reducing database-related latency.
+                        </p>
+                        <p class="note-card-action">
+                            <span class="note-card-cta" aria-disabled="true" data-note="notes/database-optimization.html">Read Note</span>
+                            <span class="note-card-status">Coming soon</span>
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         <section id="tech-stack" class="section-block">
             <div class="content-wrap">
-              <h2>Technical Skills</h2>
-          
-              <div style="margin-top:1.5rem;">
-          
-                <p><strong>Frontend:</strong> Angular, TypeScript, SCSS, Nx monorepo</p>
-          
-                <p><strong>Backend:</strong> Spring Boot, NestJS, REST APIs, JPA, Hibernate</p>
-          
-                <p><strong>Database &amp; Cache:</strong> PostgreSQL, Redis</p>
-          
-                <p><strong>Infrastructure &amp; DevOps:</strong> Docker, Docker Compose, multi-stage builds, GitHub Actions, Maven, AWS SES (SDK v2), Resilience4j</p>
-          
-                <p><strong>Deployment &amp; Observability:</strong> Render, Netlify, custom domains &amp; SSL, CORS/CSP, Prometheus, Grafana</p>
-          
-                <p><strong>Optimization &amp; Scheduling:</strong> Greedy Algorithms, Vehicle Routing Problem (VRP), Timefold</p>
-          
-              </div>
+                <h2>Technical Skills</h2>
+
+                <div class="skills-list">
+                    <p><strong>Frontend:</strong> Angular, TypeScript, SCSS, Nx monorepo</p>
+                    <p><strong>Backend:</strong> Spring Boot, NestJS, REST APIs, JPA, Hibernate</p>
+                    <p><strong>Database &amp; Cache:</strong> PostgreSQL, Redis</p>
+                    <p><strong>Infrastructure &amp; DevOps:</strong> Docker, Docker Compose, multi-stage builds, GitHub Actions, Maven, AWS SES (SDK v2), Resilience4j</p>
+                    <p><strong>Deployment &amp; Observability:</strong> Render, Netlify, custom domains &amp; SSL, CORS/CSP, Prometheus, Grafana</p>
+                    <p><strong>Optimization &amp; Scheduling:</strong> Greedy Algorithms, Vehicle Routing Problem (VRP), Timefold</p>
+                </div>
             </div>
-          </section>
+        </section>
 
         <!-- Contact -->
         <section id="contact" class="section-block">

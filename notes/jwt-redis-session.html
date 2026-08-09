@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How moving session validation from PostgreSQL to a Redis-backed cache reduced latency while preserving database fallback and shared validation across SpringMate and the NestJS chat service.">
+    <title>JWT + Redis Session Validation | Kanishk Bhati</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="content-wrap">
+            <nav class="site-navigation" aria-label="Primary navigation">
+                <a class="brand-mark" href="../index.html">Kanishk Bhati</a>
+                <ul class="navigation-list">
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a href="../index.html#engineering-notes">Engineering Notes</a></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <header class="note-article-header">
+            <div class="content-wrap">
+                <a class="note-back-link" href="../index.html#engineering-notes">← Engineering Notes</a>
+                <p class="note-category">Authentication &amp; Backend Architecture</p>
+                <h1>JWT + Redis Session Validation</h1>
+                <p class="note-article-subtitle">
+                    How moving session validation from PostgreSQL to a Redis-backed cache reduced latency
+                    while preserving a database fallback and enabling shared authentication across backend
+                    services.
+                </p>
+                <p class="note-article-meta">Engineering Note</p>
+            </div>
+        </header>
+
+        <article class="note-article-body section-block" style="border-bottom: 0;">
+            <div class="content-wrap note-article-content">
+                <h2>The problem</h2>
+                <p>
+                    On MarketMate, authentication runs through SpringMate, a Spring Boot API. The client uses
+                    JWT-based authentication; the API verifies the token and also checks whether the
+                    server-side session for that login should still be accepted. That model was already in
+                    place and working.
+                </p>
+                <p>
+                    Initially, sessions lived in PostgreSQL. SpringMate treated the database as the source
+                    of truth: on each request that needed session validation, the service checked session
+                    validity directly against PostgreSQL. That was functionally correct. The pain point was
+                    latency — repeatedly querying PostgreSQL on a frequently executed path added up.
+                </p>
+                <p>
+                    The problem was not JWT itself, and it was not that PostgreSQL was wrong for storing
+                    sessions. The problem was <em>where and how</em> session validation happened on every
+                    request. JWT still answers whether the token is valid; the session layer answers whether
+                    that login should still be allowed. We needed that session check to stay correct while
+                    making the common validation path faster.
+                </p>
+
+                <h2>The original approach</h2>
+                <p>
+                    Before Redis, the conceptual path for session validation through the auth backend looked
+                    like this:
+                </p>
+
+                <div class="flow-diagram" role="img" aria-label="Original path: Client JWT to SpringMate to PostgreSQL for session validation">
+                    <p class="flow-title">Session validation (initial)</p>
+                    <div class="flow-step">Client</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">JWT</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">SpringMate</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">PostgreSQL</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Session validation</div>
+                </div>
+
+                <p>
+                    PostgreSQL remained the authority: if the session record there said the login was valid,
+                    the request could proceed. The approach was straightforward, but session validation sat on
+                    a hot path, and every check paid the cost of a database read.
+                </p>
+
+                <h2>Why Redis entered the picture</h2>
+                <p>
+                    The change was not to replace PostgreSQL or to make Redis the source of truth. Redis was
+                    introduced as a <strong>session cache</strong> — a fast layer that holds session state so
+                    the common validation path does not always hit the database.
+                </p>
+                <p>
+                    On login, SpringMate still persists the session in PostgreSQL. The session is also written
+                    to Redis so later requests can validate against the cache first. PostgreSQL stays the
+                    persistent source of truth; Redis optimizes access to session state that has already been
+                    established there.
+                </p>
+
+                <div class="flow-diagram" role="img" aria-label="On login SpringMate writes session to PostgreSQL and Redis">
+                    <p class="flow-title">On login (conceptual)</p>
+                    <div class="flow-step">SpringMate</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-split">
+                        <div class="flow-step">PostgreSQL (source of truth)</div>
+                        <div class="flow-join">and</div>
+                        <div class="flow-step">Redis (session cache)</div>
+                    </div>
+                </div>
+
+                <h2>The new validation path</h2>
+                <p>
+                    When a request needs session validation, the service checks Redis first. If the session is
+                    present in Redis and valid, validation can continue without querying PostgreSQL for that
+                    step. If the session is <em>not</em> in Redis, that is a cache miss — not an automatic
+                    rejection. The flow falls back to PostgreSQL, which still decides whether the session is
+                    valid. Only an invalid or missing session according to the source of truth should result
+                    in authentication failure.
+                </p>
+
+                <div class="flow-diagram" role="img" aria-label="Redis first with PostgreSQL fallback on cache miss; invalid session yields 401">
+                    <p class="flow-title">Session validation with cache</p>
+                    <div class="flow-step">Request</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Redis</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Session found?</div>
+                    <div class="flow-branch">
+                        <div class="flow-branch-col">
+                            <p class="flow-branch-label">Yes</p>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Continue</div>
+                        </div>
+                        <div class="flow-branch-col">
+                            <p class="flow-branch-label">No</p>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">PostgreSQL</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Session valid?</div>
+                            <div class="flow-branch flow-branch--nested">
+                                <div class="flow-branch-col">
+                                    <p class="flow-branch-label">Yes</p>
+                                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                                    <div class="flow-step">Continue</div>
+                                </div>
+                                <div class="flow-branch-col">
+                                    <p class="flow-branch-label">No</p>
+                                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                                    <div class="flow-step">401</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    Treating a Redis miss as “logged out” would confuse cache behavior with authority.
+                    Absence from Redis might mean eviction, expiry, or a cold cache — PostgreSQL is still
+                    where validity is decided on fallback. I am not documenting here whether a successful
+                    PostgreSQL read repopulates Redis; that is an implementation detail outside this note.
+                </p>
+
+                <h2>Redis as a shared authentication layer</h2>
+                <p>
+                    MarketMate also runs a NestJS chat service that must authenticate users. SpringMate
+                    remains the authentication authority and owns the primary session model. PostgreSQL
+                    remains the persistent source of truth. Redis sits between them as a shared, fast
+                    session-validation layer that other services can read when validating a session.
+                </p>
+                <p>
+                    Without that shared cache, validating a user in the chat service conceptually chains
+                    through the auth API and the database every time. With Redis holding session state that
+                    SpringMate already wrote, the chat service can validate against Redis on the common
+                    path instead of calling SpringMate for every authentication check.
+                </p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>Without Redis (conceptual)</h3>
+                        <div class="flow-diagram">
+                            <div class="flow-step">NestJS Chat</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">SpringMate</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">PostgreSQL</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Session validation</div>
+                        </div>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>With Redis (common path)</h3>
+                        <div class="flow-diagram">
+                            <div class="flow-step">NestJS Chat</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Redis</div>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Session validation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    Redis does not replace SpringMate as the auth authority, and it does not eliminate
+                    PostgreSQL. It handles the common validation path. When the session is not available in
+                    Redis, the source-of-truth fallback remains available — the same PostgreSQL-backed model
+                    SpringMate already owned.
+                </p>
+
+                <h2>Redis isn’t just a cache</h2>
+                <p>
+                    Redis was introduced because of a latency problem on the session-validation path. Working
+                    through it changed how I thought about the service layout, not only about read speed.
+                </p>
+                <p>
+                    The same cached session state that reduced PostgreSQL lookups for SpringMate also let another 
+                    backend service validate users without routing every auth decision through
+                    the main API. I started thinking about Redis less as “something that makes reads faster”
+                    and more as a layer for state that multiple services need to access quickly — while
+                    still respecting a real source of truth elsewhere.
+                </p>
+                <p>
+                    Server-side session control still matters: logout and invalidation are about updating the
+                    authoritative session state and what the cache reflects, not about pretending a JWT
+                    expiry is the only lever. Redis did not replace that idea; it changed where the frequent
+                    read happens.
+                </p>
+
+                <h2>Trade-offs</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>PostgreSQL-only session validation</h3>
+                        <ul>
+                            <li>Simple source of truth</li>
+                            <li>No cache consistency concerns</li>
+                            <li>Fewer moving parts</li>
+                        </ul>
+                        <p>
+                            The cost is a database query on the validation path, higher latency for repeated
+                            checks, and more load on the primary database when every request validates there.
+                        </p>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>Redis + PostgreSQL</h3>
+                        <ul>
+                            <li>Fast common-path validation</li>
+                            <li>Lower pressure on PostgreSQL for session reads</li>
+                            <li>Shared session validation across services</li>
+                            <li>Source-of-truth fallback when Redis misses</li>
+                        </ul>
+                        <p>
+                            The cost is additional infrastructure, explicit cache-miss handling, thinking about
+                            consistency between Redis and PostgreSQL, and more moving parts overall.
+                        </p>
+                    </div>
+                </div>
+                <p>
+                    Neither layout is universally better. The right choice depends on how often session
+                    validation runs, how many services need it, and how much complexity you are willing to
+                    carry for a faster common path.
+                </p>
+
+                <div class="note-related-project comparison-panel">
+                    <h3>Related Project</h3>
+                    <p>
+                        <a href="https://kkbhati07.github.io/#marketmate"><strong>MarketMate — Distributed Marketplace Platform</strong></a>
+                    </p>
+                </div>
+
+                <h2>What I took away</h2>
+                <p>
+                    The interesting part was not simply “add Redis.” It was noticing that PostgreSQL could
+                    answer session validation correctly but was doing that job on almost every request, and
+                    that another service would soon need the same read pattern. Redis could handle the common
+                    path; PostgreSQL could stay the source of truth; the same cached session state could
+                    serve SpringMate and the NestJS chat service on the paths that mattered most.
+                </p>
+                <p>
+                    Authentication is still two questions: is the token valid, and should this session still
+                    be accepted? JWT handled verification; the session layer needed a data path that matched
+                    how often it ran. I am still learning how to balance cache behavior, authority, and
+                    service boundaries — but this project left me designing validation flows around
+                    <em>common path</em> and <em>fallback</em> instead of assuming every check must hit the
+                    database first.
+                </p>
+
+                <footer class="note-article-footer">
+                    <a class="note-back-link" href="../index.html#engineering-notes">← Back to Engineering Notes</a>
+                </footer>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="content-wrap">
+            <p>Built by Kanishk Bhati</p>
+        </div>
+    </footer>
+</body>
+</html>
