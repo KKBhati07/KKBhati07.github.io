@@ -471,6 +471,10 @@ button:focus-visible,
     margin-top: 1rem;
 }
 
+#contact p + p {
+    margin-top: 1rem;
+}
+
 .reveal {
     opacity: 0;
     transform: translateY(20px);
