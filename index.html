@@ -96,35 +96,37 @@
                     <h3>Intelligent Auto Planner (Confidential Client Project)</h3>
 
                     <p>
-                      Designed and evolved a production-grade backend scheduling engine integrated
-                      into an inspection platform to automate inspector-to-booking allocation.
+                        Production-grade scheduling engine integrated into an inspection platform to automate
+                        inspector-to-booking allocation. The planner evolved from a heuristic allocation
+                        strategy into a constraint-based optimization approach using Timefold.
                     </p>
 
+                    <h4 class="project-subheading">Planning evolution</h4>
                     <ol class="project-progression">
                         <li>
                             <h4>Version 1 — Heuristic / Greedy Allocation</h4>
                             <ul class="project-highlights">
-                                <li>Implemented custom greedy assignment strategy using nearest-resource logic</li>
-                                <li>Location-based prioritization using geospatial filtering concepts</li>
-                                <li>Re-planning capability for previously approved bookings</li>
+                                <li>Nearest-resource assignment strategy</li>
+                                <li>Location-based prioritization using geospatial filtering</li>
+                                <li>Re-planning of previously approved bookings</li>
                             </ul>
                         </li>
                         <li>
-                            <h4>Version 2 — Constraint-Based Optimization (Timefold)</h4>
+                            <h4>Version 2 — Constraint-Based Optimization</h4>
                             <ul class="project-highlights">
-                                <li>Integrated Timefold optimization engine for vehicle routing problem (VRP)</li>
-                                <li>Improved allocation efficiency through solver-driven optimization</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4>Real-World Constraints</h4>
-                            <ul class="project-highlights project-highlights-inline">
-                                <li>Travel time</li>
-                                <li>Inspection duration</li>
-                                <li>Schedule limits</li>
+                                <li>Integrated Timefold for vehicle-routing optimization</li>
+                                <li>Solver-driven allocation across scheduling constraints</li>
+                                <li>Improved the planning approach by modeling constraints explicitly rather than relying only on heuristic assignment</li>
                             </ul>
                         </li>
                     </ol>
+
+                    <h4 class="project-subheading">Real-world constraints</h4>
+                    <ul class="project-highlights project-highlights-inline">
+                        <li>Travel time</li>
+                        <li>Inspection duration</li>
+                        <li>Schedule limits</li>
+                    </ul>
 
                     <p class="project-tech"><strong>Tech</strong></p>
                     <ul class="tech-tags" aria-label="Technologies used">
@@ -280,13 +282,29 @@
                         </figure>
                     </div>
                     <p>
-                        Developed a web API for music management and an Android app to consume it, extract and store data in MongoDB.
+                        Music management platform consisting of a Node.js/Express API and Android client, with
+                        MongoDB used for persistent music data. The API provides authentication and backend
+                        services consumed by the mobile application.
                     </p>
-                    <ul class="project-highlights">
-                        <li>Implemented user authentication with JWT to ensure secure access</li>
-                        <li>Designed API flows for efficient music data handling</li>
-                        <li>Connected Android client with backend services and persistence layer</li>
-                    </ul>
+                    <h4 class="project-subheading">Engineering Highlights</h4>
+                    <div class="engineering-highlights">
+                        <article>
+                            <h5>Authentication &amp; API access</h5>
+                            <p>JWT-based authentication for protected API access.</p>
+                        </article>
+                        <article>
+                            <h5>Music data management</h5>
+                            <p>Designed API flows for uploading and managing music metadata and persisted data.</p>
+                        </article>
+                        <article>
+                            <h5>Mobile integration</h5>
+                            <p>Connected the Android client with backend APIs and the MongoDB persistence layer.</p>
+                        </article>
+                        <article>
+                            <h5>File handling</h5>
+                            <p>Implemented multipart file handling with Multer for music uploads.</p>
+                        </article>
+                    </div>
                     <p class="project-tech"><strong>Tech</strong></p>
                     <ul class="tech-tags" aria-label="Technologies used">
                         <li>Node.js</li>
