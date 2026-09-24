@@ -544,10 +544,76 @@ button:focus-visible,
 }
 
 .project-subheading {
-    margin-top: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.15rem;
     font-size: 1rem;
     font-family: "Outfit", sans-serif;
     color: var(--text);
+}
+
+.project-kicker {
+    margin: -0.25rem 0 0.9rem;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.98rem;
+    max-width: none;
+}
+
+.project-groups,
+.engineering-highlights {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.7rem;
+}
+
+.project-group h5,
+.engineering-highlights h5 {
+    margin: 0 0 0.4rem;
+    font-family: "Outfit", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--primary);
+}
+
+.project-group ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    color: var(--text-subtle);
+}
+
+.project-group li + li {
+    margin-top: 0.28rem;
+}
+
+.project-group li {
+    overflow-wrap: anywhere;
+}
+
+.engineering-highlights article {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 0.95rem;
+}
+
+.engineering-highlights p {
+    margin: 0;
+    max-width: none;
+    font-size: 0.95rem;
+}
+
+@media (min-width: 720px) {
+    .engineering-highlights {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 960px) {
+    .project-groups {
+        grid-template-columns: 1.15fr 0.85fr 1.1fr;
+        gap: 1rem 1.35rem;
+    }
 }
 
 .project-progression {
@@ -576,22 +642,12 @@ button:focus-visible,
     font-size: 0.95rem;
 }
 
-.architecture-scan {
-    margin: 0.55rem 0 0;
-    padding-left: 1.2rem;
-    color: var(--text-subtle);
-}
-
-.architecture-scan li + li {
-    margin-top: 0.25rem;
-}
-
-.architecture-note {
-    margin-top: 0.55rem;
-}
-
 .project-tech {
     margin-top: 1rem;
+}
+
+.engineering-highlights + .project-tech {
+    margin-top: 1.35rem;
 }
 
 .tech-tags {

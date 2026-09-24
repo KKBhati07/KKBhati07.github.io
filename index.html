@@ -143,6 +143,7 @@
                 <!-- MarketMate -->
                 <article id="marketmate" class="project-card reveal">
                     <h3>MarketMate</h3>
+                    <p class="project-kicker">Distributed Marketplace Platform</p>
                     <div class="project-media-grid">
                         <figure class="project-media-item">
                             <img src="assets/images/marketmate/1.png" alt="MarketMate project screenshot 1" loading="lazy">
@@ -165,29 +166,75 @@
                     </div>
                     <p>
                         Production-grade classifieds platform (OLX-style) for buying and selling used goods.
-                        Built with a distributed, multi-service architecture and deployed on custom domains
-                        with subdomain routing, SSL, and CDN-backed frontends.
+                        Built as a distributed, multi-service system with separate frontend, backend, admin,
+                        and real-time chat services, deployed across custom domains with SSL and CDN-backed
+                        frontends.
                     </p>
 
                     <h4 class="project-subheading">Architecture</h4>
-                    <ul class="architecture-scan">
-                        <li><strong>api.marketmatecloud.in</strong> — Spring Boot REST API</li>
-                        <li><strong>app.marketmatecloud.in</strong> — Angular SSR frontend</li>
-                        <li><strong>admin.marketmatecloud.in</strong> — Nx-based admin</li>
-                        <li><strong>Chat service</strong> — NestJS real-time messaging</li>
-                    </ul>
-                    <p class="architecture-note">
-                        DNS, SSL, and cross-origin communication tuned for secure, scalable delivery.
-                    </p>
+                    <div class="project-groups">
+                        <section class="project-group">
+                            <h5>Core application</h5>
+                            <ul>
+                                <li><strong>api.marketmatecloud.in</strong> — Spring Boot REST API</li>
+                                <li><strong>app.marketmatecloud.in</strong> — Angular SSR frontend</li>
+                                <li><strong>admin.marketmatecloud.in</strong> — Nx-based admin</li>
+                                <li>Spring Boot API and Angular SSR frontend share an Nx monorepo</li>
+                            </ul>
+                        </section>
+                        <section class="project-group">
+                            <h5>Services</h5>
+                            <ul>
+                                <li><strong>Chat service</strong> — NestJS real-time messaging</li>
+                            </ul>
+                        </section>
+                        <section class="project-group">
+                            <h5>Delivery &amp; infrastructure</h5>
+                            <ul>
+                                <li>Custom subdomains for api / app / admin</li>
+                                <li>DNS and SSL configuration</li>
+                                <li>CORS and CSP configured for production</li>
+                                <li>CDN-backed frontend delivery</li>
+                                <li>Backend and SSR on Render</li>
+                            </ul>
+                        </section>
+                    </div>
 
-                    <ul class="project-highlights">
-                        <li>Spring Boot REST API and Angular SSR app in an Nx monorepo; separate NestJS real-time chat service</li>
-                        <li>JWT authentication via httpOnly cookies; PostgreSQL session persistence; Redis validation and caching</li>
-                        <li>AWS S3 for media; Dockerized services with multi-stage builds and Docker Compose orchestration</li>
-                        <li>Integrated AWS SES (SDK v2) for transactional email delivery (OTP, email verification, user notifications) with domain-level DKIM setup and Resilience4j retry &amp; circuit breaker patterns</li>
-                        <li>Custom domain setup (api / app / admin subdomains), CORS and CSP configured for production</li>
-                        <li>Backend &amp; SSR on Render; monitoring with Prometheus and Grafana</li>
-                    </ul>
+                    <h4 class="project-subheading">Engineering Highlights</h4>
+                    <div class="engineering-highlights">
+                        <article>
+                            <h5>Authentication &amp; session management</h5>
+                            <p>JWT authentication via httpOnly cookies, with PostgreSQL session persistence and Redis-based session validation and caching.</p>
+                        </article>
+                        <article>
+                            <h5>Real-time communication</h5>
+                            <p>Separate NestJS chat service for real-time messaging.</p>
+                        </article>
+                        <article>
+                            <h5>Resilience</h5>
+                            <p>Resilience4j retry and circuit breaker patterns for backend integrations.</p>
+                        </article>
+                        <article>
+                            <h5>Media &amp; storage</h5>
+                            <p>AWS S3 for media storage.</p>
+                        </article>
+                        <article>
+                            <h5>Transactional email</h5>
+                            <p>AWS SES (SDK v2) for OTP, email verification, and user notifications, with domain-level DKIM setup.</p>
+                        </article>
+                        <article>
+                            <h5>Containerization</h5>
+                            <p>Dockerized services with multi-stage builds and Docker Compose orchestration.</p>
+                        </article>
+                        <article>
+                            <h5>Production security &amp; delivery</h5>
+                            <p>Custom domains, SSL, CORS, CSP, and CDN-backed frontend delivery.</p>
+                        </article>
+                        <article>
+                            <h5>Observability</h5>
+                            <p>Prometheus and Grafana monitoring.</p>
+                        </article>
+                    </div>
                     <p class="project-tech"><strong>Tech</strong></p>
                     <ul class="tech-tags" aria-label="Technologies used">
                         <li>Angular</li>
