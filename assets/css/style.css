@@ -457,6 +457,20 @@ button:focus-visible,
     max-width: 42rem;
 }
 
+#about p {
+    line-height: 1.7;
+}
+
+#about p:first-of-type {
+    color: var(--text);
+    font-size: 1.125rem;
+    line-height: 1.55;
+}
+
+#about p + p {
+    margin-top: 1rem;
+}
+
 .reveal {
     opacity: 0;
     transform: translateY(20px);
