@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="When backend services depend on external systems, retries, circuit breakers, and fallbacks solve different problems — and using the wrong one can make a failure worse.">
+    <title>Retry vs Circuit Breaker vs Fallback | Kanishk Bhati</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="content-wrap">
+            <nav class="site-navigation" aria-label="Primary navigation">
+                <a class="brand-mark" href="../index.html">Kanishk Bhati</a>
+                <ul class="navigation-list">
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a href="../index.html#engineering-notes">Engineering Notes</a></li>
+                    <li><a href="../index.html#tech-stack">Tech Stack</a></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <header class="note-article-header">
+            <div class="content-wrap">
+                <a class="note-back-link" href="../index.html#engineering-notes">← Engineering Notes</a>
+                <p class="note-category">Reliability Engineering</p>
+                <h1>Retry vs Circuit Breaker vs Fallback</h1>
+                <p class="note-article-subtitle">
+                    When backend services depend on external systems, failure handling is not just about trying
+                    again. Retries, circuit breakers, and fallbacks solve different problems — and using the
+                    wrong one can make a failure worse.
+                </p>
+                <p class="note-article-meta">Engineering Note</p>
+            </div>
+        </header>
+
+        <article class="note-article-body section-block" style="border-bottom: 0;">
+            <div class="content-wrap note-article-content">
+                <h2>The problem</h2>
+                <p>
+                    One thing I have been paying more attention to in backend systems is how they behave when
+                    something they depend on stops behaving normally.
+                </p>
+                <p>
+                    An API call to an external service can fail for many reasons. The dependency might be
+                    temporarily unavailable, slow to respond, returning errors, or failing consistently.
+                </p>
+                <p>The first instinct is often simple:</p>
+                <p>“Try again.”</p>
+                <p>Sometimes that is exactly what the system needs.</p>
+                <p>But retrying is not a complete failure strategy.</p>
+                <p>
+                    If the dependency is already struggling, repeatedly sending the same request can create
+                    even more traffic. A temporary failure can turn into a larger problem if every caller
+                    keeps retrying without any limits.
+                </p>
+                <p>
+                    That is where I started thinking about retries, circuit breakers, and fallbacks as three
+                    different tools rather than three interchangeable patterns.
+                </p>
+                <p>A retry asks:</p>
+                <p>“Should I try this operation again?”</p>
+                <p>A circuit breaker asks:</p>
+                <p>“Should I keep calling this dependency at all right now?”</p>
+                <p>A fallback asks:</p>
+                <p>“If the dependency cannot complete this operation, what can I do instead?”</p>
+                <p>Those are different questions.</p>
+
+                <h2>Retry: dealing with transient failures</h2>
+                <p>Retries are useful when a failure is likely to be temporary.</p>
+                <p>
+                    For example, a network request might fail because of a short-lived connection problem or
+                    a temporary interruption in the dependency.
+                </p>
+                <p>Instead of immediately failing the request, the application can try the operation again.</p>
+                <p>Conceptually:</p>
+
+                <div class="flow-diagram" role="img" aria-label="A request reaches an external service, fails, is retried, and then succeeds">
+                    <p class="flow-title">Retry (conceptual)</p>
+                    <div class="flow-step">Request</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">External service</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Failure</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Retry</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">External service</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Success</div>
+                </div>
+
+                <p>The important part is that retries need boundaries.</p>
+                <p>A retry policy should consider things such as:</p>
+                <ul>
+                    <li>How many times should the operation be retried?</li>
+                    <li>Which failures are actually retryable?</li>
+                    <li>Should there be a delay between attempts?</li>
+                    <li>Should the delay increase between attempts?</li>
+                    <li>Is the operation safe to repeat?</li>
+                </ul>
+                <p>The last question is particularly important.</p>
+                <p>
+                    Retrying a read is generally a different problem from retrying an operation that changes
+                    state. If an operation creates something, charges something, sends something, or otherwise
+                    has side effects, blindly repeating it can create a second operation rather than simply
+                    recovering the first one.
+                </p>
+                <p>So the lesson for me is not “add retries.”</p>
+                <p>It is:</p>
+                <p>Retry when the failure looks transient and the operation can be safely retried.</p>
+
+                <h2>Why retries alone are not enough</h2>
+                <p>Imagine an external dependency is consistently failing.</p>
+                <p>Without a limit, every incoming request can trigger multiple attempts.</p>
+                <p>One request becomes several requests to the failing service.</p>
+                <p>At scale, that can look something like:</p>
+
+                <div class="flow-diagram" role="img" aria-label="Incoming requests pass through the service to an external dependency that fails, and each failure is retried again">
+                    <p class="flow-title">Unbounded retries (conceptual)</p>
+                    <div class="flow-step">Incoming requests</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Service</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">External dependency</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Failure</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Retry</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Failure</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Retry</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Failure</div>
+                </div>
+
+                <p>The application is spending more work trying to reach something that is already unavailable.</p>
+                <p>This is where retries can become part of the problem.</p>
+                <p>
+                    A retry mechanism should therefore be designed with the possibility that the dependency
+                    may remain unavailable for longer than expected.
+                </p>
+                <p>That led me to the next question:</p>
+                <p>What happens when continuing to call the dependency is no longer useful?</p>
+
+                <h2>Circuit breaker: stopping repeated failure</h2>
+                <p>A circuit breaker introduces another decision.</p>
+                <p>
+                    Instead of allowing every request to keep calling a failing dependency, the application
+                    can temporarily stop making those calls after failures cross a defined threshold.
+                </p>
+                <p>Conceptually:</p>
+
+                <div class="flow-diagram" role="img" aria-label="A request reaches a circuit breaker. If the dependency is considered healthy, the application calls it. If not, the application fails fast or uses a fallback.">
+                    <p class="flow-title">Circuit breaker (conceptual)</p>
+                    <div class="flow-step">Request</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Circuit breaker</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Is dependency considered healthy?</div>
+                    <div class="flow-branch">
+                        <div class="flow-branch-col">
+                            <p class="flow-branch-label">Yes</p>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Call dependency</div>
+                        </div>
+                        <div class="flow-branch-col">
+                            <p class="flow-branch-label">No</p>
+                            <div class="flow-arrow" aria-hidden="true">↓</div>
+                            <div class="flow-step">Fail fast / use fallback</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>The useful part is not the name “circuit breaker.”</p>
+                <p>The useful part is the change in behavior.</p>
+                <p>
+                    Instead of repeatedly discovering that the dependency is unavailable, the application can
+                    recognize the failure pattern and stop sending unnecessary traffic for a period of time.
+                </p>
+                <p>
+                    That gives the dependency some breathing room and prevents the application from spending
+                    resources repeatedly waiting for failures.
+                </p>
+                <p>
+                    Eventually, the circuit can allow requests through again to determine whether the
+                    dependency has recovered.
+                </p>
+                <p>The important idea is that a circuit breaker is about controlling calls to an unhealthy dependency.</p>
+                <p>A retry is about giving an individual operation another chance.</p>
+                <p>They solve different problems.</p>
+
+                <h2>Retry vs Circuit Breaker</h2>
+                <p>I think about the distinction like this:</p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>Retry</h3>
+                        <p>“Maybe this particular failure is temporary.”</p>
+                        <p>The system makes another attempt.</p>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>Circuit breaker</h3>
+                        <p>“This dependency appears unhealthy right now.”</p>
+                        <p>The system stops repeatedly calling it.</p>
+                    </div>
+                </div>
+
+                <p>That means they can work together.</p>
+                <p>
+                    A request might retry a small number of times for a transient failure, while the circuit
+                    breaker prevents the service from continuing to hammer the dependency when failures
+                    become persistent.
+                </p>
+                <p>
+                    The exact thresholds and timing depend on the system. There is no universal number that
+                    makes a circuit breaker correct.
+                </p>
+                <p>The important part is understanding what decision the mechanism is making.</p>
+
+                <h2>Fallback: doing something useful when the dependency fails</h2>
+                <p>Retries and circuit breakers answer questions about calling the dependency.</p>
+                <p>A fallback answers a different question:</p>
+                <p>“What should the application do if that dependency cannot provide the result?”</p>
+                <p>Sometimes the answer is to return a controlled error.</p>
+                <p>Sometimes the application can use previously available data.</p>
+                <p>Sometimes a default response is acceptable.</p>
+                <p>
+                    Sometimes the operation simply cannot continue and the system should communicate that
+                    clearly to the caller.
+                </p>
+                <p>Conceptually:</p>
+
+                <div class="flow-diagram" role="img" aria-label="When a dependency is unavailable, a fallback produces an alternative response">
+                    <p class="flow-title">Fallback (conceptual)</p>
+                    <div class="flow-step">Request</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Dependency unavailable</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Fallback</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Alternative response</div>
+                </div>
+
+                <p>A fallback should not pretend that the dependency succeeded when it did not.</p>
+                <p>That distinction matters.</p>
+                <p>
+                    Returning stale or partial information might be acceptable for one type of operation and
+                    completely wrong for another.
+                </p>
+                <p>The fallback has to match the business meaning of the operation.</p>
+
+                <h2>Putting the three together</h2>
+                <p>The most useful mental model for me is not:</p>
+                <p>“Which one should I use?”</p>
+                <p>It is:</p>
+                <p>“What kind of failure am I dealing with, and what should happen next?”</p>
+                <p>A simplified flow looks like this:</p>
+
+                <div class="flow-diagram" role="img" aria-label="Conceptual model: a circuit breaker decides whether to call the dependency. If it is unavailable, use a fallback or controlled failure. If the call fails and the failure is retryable, retry within defined limits. Otherwise use a fallback or controlled failure. If it still fails, use a fallback or controlled failure. If the call succeeds, return the response.">
+                    <p class="flow-title">Failure path (conceptual)</p>
+                    <div class="flow-step">Request</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Circuit breaker</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Dependency available?</div>
+                    <div class="flow-join">→ No → Fallback / controlled failure</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Yes</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Call dependency</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Failure?</div>
+                    <div class="flow-join">→ No → Return response</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Yes</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Is failure retryable?</div>
+                    <div class="flow-join">→ No → Fallback / controlled failure</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Yes</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Retry within defined limits</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Still failing?</div>
+                    <div class="flow-join">→ Fallback / controlled failure</div>
+                </div>
+
+                <p>This is only a conceptual model. Real systems can have more states and more detailed policies.</p>
+                <p>The important part is that each mechanism has a different responsibility.</p>
+                <ul>
+                    <li><strong>Retry:</strong> Give a potentially transient operation another chance.</li>
+                    <li><strong>Circuit breaker:</strong> Stop repeatedly calling a dependency that appears unhealthy.</li>
+                    <li><strong>Fallback:</strong> Provide an alternative behavior when the dependency cannot complete the operation.</li>
+                </ul>
+
+                <h2>The part I find easy to get wrong</h2>
+                <p>It is tempting to think of reliability patterns as things you simply add to a service.</p>
+                <p>Add retries.</p>
+                <p>Add a circuit breaker.</p>
+                <p>Add a fallback.</p>
+                <p>Done.</p>
+                <p>But each one changes system behavior.</p>
+                <p>A retry changes how many times an operation can execute.</p>
+                <p>A circuit breaker changes whether a dependency is called at all.</p>
+                <p>A fallback changes what the user or calling service receives when something fails.</p>
+                <p>Those decisions should therefore be connected to the actual operation.</p>
+                <p>
+                    For example, retrying a request that is safe to repeat is a different problem from
+                    retrying an operation with side effects.
+                </p>
+                <p>
+                    Similarly, returning cached data as a fallback might be useful for a read-heavy endpoint
+                    but unacceptable when the caller requires the latest authoritative state.
+                </p>
+                <p>Reliability is therefore not only about keeping requests alive.</p>
+                <p>It is also about deciding which behavior is safe when the normal path stops working.</p>
+
+                <h2>Failure handling is also about protecting the system</h2>
+                <p>
+                    One thing I increasingly appreciate about these patterns is that they protect more than
+                    the individual request.
+                </p>
+                <p>A retry can help recover from a short-lived problem.</p>
+                <p>
+                    A circuit breaker can prevent a struggling dependency from receiving an increasing number
+                    of repeated requests.
+                </p>
+                <p>
+                    A fallback can allow the rest of the system to degrade in a controlled way instead of
+                    failing unpredictably.
+                </p>
+                <p>
+                    That means failure handling is partly about protecting the dependency and partly about
+                    protecting the application itself.
+                </p>
+                <p>The goal is not necessarily:</p>
+                <p>“Never show an error.”</p>
+                <p>Sometimes the correct behavior is a clear, controlled failure.</p>
+                <p>A reliable system is not one where failures never happen.</p>
+                <p>It is one where failures have predictable behavior.</p>
+
+                <h2>Trade-offs</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>Retries</h3>
+                        <p>Useful for:</p>
+                        <ul>
+                            <li>Transient failures</li>
+                            <li>Short-lived network problems</li>
+                            <li>Operations that are safe to repeat</li>
+                        </ul>
+                        <p>Trade-offs:</p>
+                        <ul>
+                            <li>Additional latency</li>
+                            <li>Additional traffic</li>
+                            <li>Risk of duplicate side effects if the operation is not safe to repeat</li>
+                            <li>Can amplify an existing outage if poorly bounded</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>Circuit breakers</h3>
+                        <p>Useful for:</p>
+                        <ul>
+                            <li>Consistently failing dependencies</li>
+                            <li>Preventing repeated calls to an unhealthy service</li>
+                            <li>Failing fast when continuing to call is unlikely to help</li>
+                        </ul>
+                        <p>Trade-offs:</p>
+                        <ul>
+                            <li>Additional state and configuration</li>
+                            <li>Temporary failures can cause calls to be rejected while the circuit is open</li>
+                            <li>Thresholds and recovery behavior need to match the system</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>Fallbacks</h3>
+                        <p>Useful for:</p>
+                        <ul>
+                            <li>Graceful degradation</li>
+                            <li>Returning alternative or previously available information</li>
+                            <li>Providing controlled behavior when a dependency is unavailable</li>
+                        </ul>
+                        <p>Trade-offs:</p>
+                        <ul>
+                            <li>The fallback may provide less complete information</li>
+                            <li>Stale or partial data can be misleading if used incorrectly</li>
+                            <li>Not every operation has a meaningful fallback</li>
+                        </ul>
+                    </div>
+                </div>
+                <p>None of these patterns is universally required.</p>
+                <p>
+                    The architecture should reflect the dependency, the operation being performed, and what
+                    failure means to the application.
+                </p>
+
+                <h2>What I took away</h2>
+                <p>
+                    The biggest shift for me was moving away from thinking about retries as the default
+                    answer to every external-service failure.
+                </p>
+                <p>Sometimes a retry is exactly right.</p>
+                <p>Sometimes continuing to retry is the wrong thing to do.</p>
+                <p>Sometimes the system should stop calling the dependency for a while.</p>
+                <p>Sometimes the right answer is to return something different.</p>
+                <p>
+                    Retries, circuit breakers, and fallbacks are therefore not competing solutions. They are
+                    different decisions in the failure path.
+                </p>
+                <p>The useful question is not:</p>
+                <p>“Which pattern should I add?”</p>
+                <p>It is:</p>
+                <p>“What should this system do when the normal path stops working?”</p>
+                <p>That question leads to much better backend designs.</p>
+
+                <footer class="note-article-footer">
+                    <a class="note-back-link" href="../index.html#engineering-notes">← Back to Engineering Notes</a>
+                </footer>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="content-wrap">
+            <p>Built by Kanishk Bhati</p>
+        </div>
+    </footer>
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>
