@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kanishk Bhati — Full-Stack Engineer. I build production-grade systems and scalable web applications, with a focus on backend architecture, distributed systems, reliability, and optimization. Projects, engineering notes, and technical stack.">
+    <meta name="description" content="Kanishk Bhati — Full-Stack Engineer. I build production-grade systems and web applications, with a focus on backend architecture, distributed services, reliability, and optimization. Projects, engineering notes, and technical stack.">
     <title>Kanishk Bhati | Full-Stack Engineer</title>
     <link rel="canonical" href="https://kkbhati07.github.io/">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kkbhati07.github.io/">
     <meta property="og:title" content="Kanishk Bhati | Full-Stack Engineer">
-    <meta property="og:description" content="I build production-grade systems and scalable web applications, with a focus on backend architecture, distributed systems, reliability, and optimization.">
+    <meta property="og:description" content="I build production-grade systems and web applications, with a focus on backend architecture, distributed services, reliability, and optimization.">
     <meta property="og:image" content="https://kkbhati07.github.io/assets/images/og/portfolio-preview.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -19,23 +19,69 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kanishk Bhati | Full-Stack Engineer">
-    <meta name="twitter:description" content="I build production-grade systems and scalable web applications, with a focus on backend architecture, distributed systems, reliability, and optimization.">
+    <meta name="twitter:description" content="I build production-grade systems and web applications, with a focus on backend architecture, distributed services, reliability, and optimization.">
     <meta name="twitter:image" content="https://kkbhati07.github.io/assets/images/og/portfolio-preview.jpg">
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="assets/favicon.svg" color="#0f766e">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <noscript>
+        <style>
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+
+            .nav-toggle {
+                display: none;
+            }
+        </style>
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Kanishk Bhati",
+        "url": "https://kkbhati07.github.io/",
+        "jobTitle": "Full-Stack Engineer",
+        "email": "mailto:kk.bhatii.007@gmail.com",
+        "knowsAbout": [
+            "Backend architecture",
+            "Distributed services",
+            "Authentication and session management",
+            "Constraint-based scheduling",
+            "Database optimization"
+        ],
+        "sameAs": [
+            "https://github.com/KKBhati07",
+            "https://www.linkedin.com/in/kanishk-bhati-39ab9a23a/"
+        ]
+    }
+    </script>
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <header class="site-header">
         <div class="content-wrap">
             <nav class="site-navigation" aria-label="Primary navigation">
                 <a class="brand-mark" href="#intro">Kanishk Bhati</a>
-                <ul class="navigation-list">
-                    <li><a href="#about">About</a></li>
+                <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-navigation" aria-label="Menu">
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                </button>
+                <ul class="navigation-list" id="primary-navigation">
+                    <li><a href="#experience">Experience</a></li>
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#engineering-notes">Engineering Notes</a></li>
+                    <li><a href="#about">About</a></li>
                     <li><a href="#tech-stack">Tech Stack</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -43,7 +89,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main" tabindex="-1">
         <!-- Intro -->
         <section id="intro" class="intro-section">
             <div class="content-wrap intro-layout">
@@ -51,40 +97,55 @@
                 <h1 class="hero-animate hero-animate--2">Kanishk Bhati</h1>
                 <p class="intro-title hero-animate hero-animate--3">Full-Stack Engineer</p>
                 <p class="intro-description hero-animate hero-animate--4">
-                    I build production-grade systems and scalable web applications, with a focus on backend
-                    architecture, distributed systems, reliability, and optimization.
+                    I build production-grade systems and web applications, with a focus on backend
+                    architecture, distributed services, reliability, and optimization.
                 </p>
                 <div class="intro-actions hero-animate hero-animate--5">
                     <a class="button button-primary" href="#projects">View Projects</a>
                     <a class="button button-secondary" href="assets/resume/kanishk_bhati_resume_2026.pdf" download>Download Resume</a>
                 </div>
+                <p class="intro-secondary-link hero-animate hero-animate--5">
+                    Or read my <a href="#engineering-notes">engineering notes</a> on session validation, retries, and scheduling.
+                </p>
                 <ul class="hero-chips hero-animate hero-animate--6" aria-label="Focus areas">
                     <li>Spring Boot</li>
                     <li>PostgreSQL</li>
                     <li>Redis</li>
-                    <li>Distributed Systems</li>
+                    <li>Distributed Services</li>
                     <li>Timefold</li>
                 </ul>
             </div>
         </section>
 
-        <!-- About -->
-        <section id="about" class="section-block">
+        <!-- Experience -->
+        <section id="experience" class="section-block">
             <div class="content-wrap reveal">
-                <span class="section-eyebrow">About</span>
-                <h2>About Me</h2>
-                <p>
-                    I'm a full-stack engineer focused on building production-grade systems that solve real engineering problems.
-                </p>
-                <p>
-                    My work spans backend architecture, API design, distributed services, authentication, scheduling and optimization, and production infrastructure. I enjoy working on problems where reliability, performance, and maintainability matter as much as getting the feature working.
-                </p>
-                <p>
-                    Through projects like MarketMate, the Auto Planner, and Alphabet Music API, I've worked across Spring Boot, Node.js, Angular, NestJS, PostgreSQL, Redis, MongoDB, Docker, and optimization tooling such as Timefold — building systems that go beyond simple CRUD applications.
-                </p>
-                <p>
-                    I'm particularly interested in understanding why a system behaves the way it does, finding the bottleneck or architectural constraint, and then designing a solution that is practical to operate and maintain.
-                </p>
+                <span class="section-eyebrow">Career</span>
+                <h2>Experience</h2>
+                <ol class="experience-list">
+                    <li class="experience-item">
+                        <div class="experience-heading">
+                            <h3>Software Development Engineer (Full Stack)</h3>
+                            <p class="experience-period">Aug 2025 – Present</p>
+                        </div>
+                        <p class="experience-company">28One · Gurugram, Haryana</p>
+                        <p>
+                            Backend and full-stack work on scheduling and optimization services, REST API design,
+                            containerized deployments, and database query performance.
+                        </p>
+                    </li>
+                    <li class="experience-item">
+                        <div class="experience-heading">
+                            <h3>Software Development Engineer Intern (Full Stack)</h3>
+                            <p class="experience-period">Feb 2024 – Jul 2024</p>
+                        </div>
+                        <p class="experience-company">Coding Ninjas · Gurugram, Haryana</p>
+                        <p>
+                            Full-stack feature work, front-end performance improvements, and automation of
+                            leaderboard updates using cron jobs and event-driven triggers.
+                        </p>
+                    </li>
+                </ol>
             </div>
         </section>
 
@@ -98,13 +159,40 @@
 
                 <!-- Auto Planner -->
                 <article class="project-card reveal">
-                    <h3>Intelligent Auto Planner (Confidential Client Project)</h3>
+                    <h3>Intelligent Auto Planner</h3>
+                    <p class="project-kicker">Constraint-Based Scheduling Engine</p>
+                    <p class="project-meta">Professional work at 28One · Aug 2025 – present · Backend engineering</p>
 
                     <p>
-                        Production-grade scheduling engine integrated into an inspection platform to automate
+                        Scheduling engine integrated into an inspection platform to automate
                         inspector-to-booking allocation. The planner evolved from a heuristic allocation
                         strategy into a constraint-based optimization approach using Timefold.
                     </p>
+
+                    <h4 class="project-subheading">Why this problem is hard</h4>
+                    <p>
+                        Assigning inspectors to bookings is a combinatorial problem rather than a sorting problem.
+                        Each assignment changes what the remaining ones cost, because travel time between sites,
+                        inspection duration, and per-inspector schedule and capacity limits all interact. A
+                        nearest-resource rule picks a defensible inspector for each booking in isolation and still
+                        produces a poor overall plan. Approved bookings also change, so the planner has to
+                        recompute without treating existing commitments as disposable.
+                    </p>
+
+                    <h4 class="project-subheading">Planning flow</h4>
+                    <div class="flow-diagram" role="img" aria-label="Planning flow: bookings and inspectors are the input, a constraint model applies travel time, inspection duration and capacity limits, the solver scores candidate plans, allocation assigns an inspector per booking, and re-planning recomputes when bookings change">
+                        <p class="flow-title">Input → constraints → solver → allocation</p>
+                        <div class="flow-step">Bookings &amp; inspectors</div>
+                        <div class="flow-arrow" aria-hidden="true">↓</div>
+                        <div class="flow-step">Constraint model — travel time, inspection duration, schedule &amp; capacity limits</div>
+                        <div class="flow-arrow" aria-hidden="true">↓</div>
+                        <div class="flow-step">Solver — scores candidate plans, penalizes unassigned bookings</div>
+                        <div class="flow-arrow" aria-hidden="true">↓</div>
+                        <div class="flow-step">Allocation — one inspector assigned per booking</div>
+                        <div class="flow-arrow" aria-hidden="true">↓</div>
+                        <div class="flow-step">Re-planning — recompute when bookings change</div>
+                        <p class="flow-join">Re-planning feeds back into the constraint model as new input.</p>
+                    </div>
 
                     <h4 class="project-subheading">Planning evolution</h4>
                     <ol class="project-progression">
@@ -121,6 +209,8 @@
                             <ul class="project-highlights">
                                 <li>Integrated Timefold for vehicle-routing optimization</li>
                                 <li>Solver-driven allocation across scheduling constraints</li>
+                                <li>Modeled capacity limits and unassigned-booking penalties, and configured solver termination strategies (time-based and unimproved-spent limits)</li>
+                                <li>Exposed REST endpoints for dynamic planning and re-planning</li>
                                 <li>Improved the planning approach by modeling constraints explicitly rather than relying only on heuristic assignment</li>
                             </ul>
                         </li>
@@ -131,7 +221,13 @@
                         <li>Travel time</li>
                         <li>Inspection duration</li>
                         <li>Schedule limits</li>
+                        <li>Capacity limits</li>
                     </ul>
+
+                    <h4 class="project-subheading">Outcome</h4>
+                    <p>
+                        Schema and query optimization on this work reduced data-retrieval latency by 35%.
+                    </p>
 
                     <p class="project-tech"><strong>Tech</strong></p>
                     <ul class="tech-tags" aria-label="Technologies used">
@@ -143,7 +239,7 @@
                     </ul>
 
                     <p class="project-confidential">
-                        Due to confidentiality, source code and internal system details are not publicly available.
+                        Built at 28One. Source code and internal system details are not publicly available.
                     </p>
                 </article>
 
@@ -151,31 +247,41 @@
                 <article id="marketmate" class="project-card reveal">
                     <h3>MarketMate</h3>
                     <p class="project-kicker">Distributed Marketplace Platform</p>
+                    <p class="project-meta">Personal project · Full-stack · Live in production</p>
                     <div class="project-media-grid">
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/1.png" alt="MarketMate project screenshot 1" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/2.png" alt="MarketMate project screenshot 2" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/3.png" alt="MarketMate project screenshot 3" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/4.png" alt="MarketMate project screenshot 4" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/5.png" alt="MarketMate project screenshot 5" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/marketmate/6.png" alt="MarketMate project screenshot 6" loading="lazy">
-                        </figure>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/1.png" alt="MarketMate landing page hero with the tagline Sell. Chat. Close." loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/2.png" alt="MarketMate profile page showing the My Posts and Favorites tabs beside a user profile card" loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/3.png" alt="MarketMate listings feed with price range and location filters beside listing cards" loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/4.png" alt="MarketMate search view with the listings filter panel" loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/5.png" alt="MarketMate listings page with the filter panel open" loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/marketmate/6.png" alt="MarketMate sell-item form with title, description, price, category and location fields and item condition options" loading="lazy">
+                        </button>
                     </div>
                     <p>
-                        Production-grade classifieds platform (OLX-style) for buying and selling used goods.
+                        Classifieds platform (OLX-style) for buying and selling used goods.
                         Built as a distributed, multi-service system with separate frontend, backend, admin,
                         and real-time chat services, deployed across custom domains with SSL and CDN-backed
                         frontends.
+                    </p>
+
+                    <h4 class="project-subheading">Why this is technically interesting</h4>
+                    <p>
+                        The marketplace features were not the hard part. Two independently deployed services — the
+                        Spring Boot API and the NestJS chat service — both have to trust the same user session. That
+                        meant validating session state fast enough for a frequently executed path, without routing
+                        every authentication decision in the chat service through the main API, and without treating
+                        a cache miss as proof that someone is logged out.
                     </p>
 
                     <h4 class="project-subheading">Architecture</h4>
@@ -242,6 +348,14 @@
                             <p>Prometheus and Grafana monitoring.</p>
                         </article>
                     </div>
+
+                    <h4 class="project-subheading">Outcome</h4>
+                    <p>
+                        Running in production across four deployed services and three custom subdomains, with
+                        Prometheus and Grafana dashboards and Resilience4j retry and circuit breaker policies on
+                        backend integrations.
+                    </p>
+
                     <p class="project-tech"><strong>Tech</strong></p>
                     <ul class="tech-tags" aria-label="Technologies used">
                         <li>Angular</li>
@@ -254,7 +368,7 @@
                         <li>AWS SES</li>
                         <li>Docker</li>
                         <li>Docker Compose</li>
-                        <li>JWT (httpOnly)</li>
+                        <li>JWT</li>
                         <li>Render</li>
                         <li>Netlify</li>
                         <li>Prometheus</li>
@@ -278,13 +392,14 @@
                 <!-- Alphabet Music API -->
                 <article class="project-card reveal">
                     <h3>Alphabet Music API</h3>
+                    <p class="project-meta">Early project · REST API with Android client</p>
                     <div class="project-media-grid">
-                        <figure class="project-media-item">
-                            <img src="assets/images/alphabet_music/1.png" alt="Alphabet Music API screenshot 1" loading="lazy">
-                        </figure>
-                        <figure class="project-media-item">
-                            <img src="assets/images/alphabet_music/2.jpg" alt="Alphabet Music API screenshot 2" loading="lazy">
-                        </figure>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/alphabet_music/1.png" alt="Alphabet Music web upload form with a file chooser and title, artist and album fields" loading="lazy">
+                        </button>
+                        <button type="button" class="project-media-item">
+                            <img src="assets/images/alphabet_music/2.jpg" alt="Alphabet Music Android player screen with playback controls and a progress bar" loading="lazy">
+                        </button>
                     </div>
                     <p>
                         Music management platform consisting of a Node.js/Express API and Android client, with
@@ -345,8 +460,8 @@
                     <span class="section-eyebrow">Writing</span>
                     <h2>Engineering Notes</h2>
                     <p class="section-lead">
-                        Notes from building backend and distributed systems — covering architecture decisions,
-                        performance, reliability, and lessons from real engineering work.
+                        Write-ups on backend problems I've actually run into — debugging, authentication,
+                        reliability, and the architectural decisions and trade-offs behind each fix.
                     </p>
                 </div>
 
@@ -355,8 +470,8 @@
                         <p class="note-category">Authentication &amp; Backend Architecture</p>
                         <h3>JWT + Redis Session Validation</h3>
                         <p>
-                            Why JWT alone may not provide enough control over active sessions, and how
-                            server-side session validation can complement token-based authentication.
+                            A valid JWT doesn't mean a session should still be trusted. Adding Redis-backed
+                            session validation closed that gap without giving up the speed of stateless tokens.
                         </p>
                         <p class="note-card-action">
                             <a class="note-card-cta" href="notes/jwt-redis-session.html">Read Note</a>
@@ -367,8 +482,8 @@
                         <p class="note-category">Reliability Engineering</p>
                         <h3>Retry vs Circuit Breaker vs Fallback</h3>
                         <p>
-                            How to think about retries, circuit breakers, and fallbacks when backend
-                            services depend on external systems.
+                            Retries, circuit breakers, and fallbacks answer different questions when a dependency
+                            starts failing — picking the wrong one can turn a blip into an outage.
                         </p>
                         <p class="note-card-action">
                             <a class="note-card-cta" href="notes/retry-circuit-breaker-fallback.html">Read Note</a>
@@ -417,21 +532,32 @@
             </div>
         </section>
 
+        <!-- About -->
+        <section id="about" class="section-block">
+            <div class="content-wrap reveal">
+                <span class="section-eyebrow">About</span>
+                <h2>About Me</h2>
+                <p>
+                    I'm a full-stack engineer focused on building production systems that solve real engineering problems.
+                </p>
+                <p>
+                    My work spans backend architecture, API design, distributed services, authentication, scheduling and optimization, and production infrastructure. I enjoy working on problems where reliability, performance, and maintainability matter as much as getting the feature working.
+                </p>
+                <p>
+                    The work I find most interesting is usually diagnostic. On MarketMate, session validation was functionally correct but querying PostgreSQL on nearly every request; the fix was deciding what belonged on the common path and what belonged in the fallback. On the Auto Planner, a greedy assignment strategy produced schedules that looked reasonable per booking and poor overall, which is what pushed the problem toward a constraint solver.
+                </p>
+                <p>
+                    I'm particularly interested in understanding why a system behaves the way it does, finding the bottleneck or architectural constraint, and then designing a solution that is practical to operate and maintain.
+                </p>
+            </div>
+        </section>
+
         <section id="tech-stack" class="section-block">
             <div class="content-wrap reveal">
-                <span class="section-eyebrow">Stack</span>
-                <h2>Technical Skills</h2>
+                <span class="section-eyebrow">Skills</span>
+                <h2>Tech Stack</h2>
 
                 <div class="skills-grid">
-                    <div class="skill-group">
-                        <h3>Frontend</h3>
-                        <ul class="tech-tags">
-                            <li>Angular</li>
-                            <li>TypeScript</li>
-                            <li>SCSS</li>
-                            <li>Nx monorepo</li>
-                        </ul>
-                    </div>
                     <div class="skill-group">
                         <h3>Backend</h3>
                         <ul class="tech-tags">
@@ -442,7 +568,7 @@
                             <li>REST APIs</li>
                             <li>JPA</li>
                             <li>Hibernate</li>
-                            <li>JWT (httpOnly)</li>
+                            <li>JWT</li>
                             <li>Java</li>
                         </ul>
                     </div>
@@ -455,6 +581,14 @@
                         </ul>
                     </div>
                     <div class="skill-group">
+                        <h3>Optimization &amp; Scheduling</h3>
+                        <ul class="tech-tags">
+                            <li>Greedy Algorithms</li>
+                            <li>Vehicle Routing Problem (VRP)</li>
+                            <li>Timefold</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group">
                         <h3>Infrastructure &amp; DevOps</h3>
                         <ul class="tech-tags">
                             <li>Docker</li>
@@ -463,7 +597,7 @@
                             <li>GitHub Actions</li>
                             <li>Maven</li>
                             <li>AWS S3</li>
-                            <li>AWS SES (SDK v2)</li>
+                            <li>AWS SES</li>
                             <li>Resilience4j</li>
                         </ul>
                     </div>
@@ -479,11 +613,12 @@
                         </ul>
                     </div>
                     <div class="skill-group">
-                        <h3>Optimization &amp; Scheduling</h3>
+                        <h3>Frontend</h3>
                         <ul class="tech-tags">
-                            <li>Greedy Algorithms</li>
-                            <li>Vehicle Routing Problem (VRP)</li>
-                            <li>Timefold</li>
+                            <li>Angular</li>
+                            <li>TypeScript</li>
+                            <li>SCSS</li>
+                            <li>Nx</li>
                         </ul>
                     </div>
                 </div>
@@ -493,9 +628,9 @@
         <section id="contact" class="section-block">
             <div class="content-wrap reveal">
                 <span class="section-eyebrow">Contact</span>
-                <h2>Let’s Build Something</h2>
+                <h2>Open to Backend and Full-Stack Engineering Roles</h2>
                 <p>
-                    I’m open to discussing software projects, backend systems, technical challenges, and opportunities where I can contribute as a full-stack engineer.
+                    I’m looking for work on backend-heavy systems — APIs, distributed services, scheduling and optimization, authentication, and performance. I’m also happy to talk through a specific technical problem without a role attached.
                 </p>
                 <p>
                     If you’d like to get in touch, feel free to reach out through email or connect with me on GitHub and LinkedIn.
@@ -511,11 +646,14 @@
 
     <footer class="site-footer">
         <div class="content-wrap">
-          <p>Built by Kanishk Bhati</p>
+          <p>
+            Built by Kanishk Bhati ·
+            <a href="https://github.com/KKBhati07/KKBhati07.github.io" target="_blank" rel="noopener">source on GitHub</a>
+          </p>
         </div>
       </footer>
 
-    <div id="image-lightbox" class="image-lightbox" aria-hidden="true" role="dialog" aria-label="Expanded project image">
+    <div id="image-lightbox" class="image-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded project image">
         <button type="button" class="lightbox-button lightbox-close" id="lightbox-close" aria-label="Close image viewer">&times;</button>
         <button type="button" class="lightbox-button lightbox-prev" id="lightbox-prev" aria-label="Previous image">&#10094;</button>
         <div class="lightbox-stage">

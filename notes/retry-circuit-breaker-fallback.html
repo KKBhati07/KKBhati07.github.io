@@ -5,20 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="When backend services depend on external systems, retries, circuit breakers, and fallbacks solve different problems — and using the wrong one can make a failure worse.">
     <title>Retry vs Circuit Breaker vs Fallback | Kanishk Bhati</title>
+    <link rel="canonical" href="https://kkbhati07.github.io/notes/retry-circuit-breaker-fallback.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Kanishk Bhati">
+    <meta property="og:title" content="Retry vs Circuit Breaker vs Fallback">
+    <meta property="og:description" content="When backend services depend on external systems, retries, circuit breakers, and fallbacks solve different problems — and using the wrong one can make a failure worse.">
+    <meta property="og:url" content="https://kkbhati07.github.io/notes/retry-circuit-breaker-fallback.html">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Retry vs Circuit Breaker vs Fallback">
+    <meta name="twitter:description" content="When backend services depend on external systems, retries, circuit breakers, and fallbacks solve different problems — and using the wrong one can make a failure worse.">
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="../assets/favicon.svg" color="#0f766e">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
+
+    <noscript>
+        <style>
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+
+            .nav-toggle {
+                display: none;
+            }
+        </style>
+    </noscript>
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <header class="site-header">
         <div class="content-wrap">
             <nav class="site-navigation" aria-label="Primary navigation">
                 <a class="brand-mark" href="../index.html">Kanishk Bhati</a>
-                <ul class="navigation-list">
-                    <li><a href="../index.html#about">About</a></li>
+                <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-navigation" aria-label="Menu">
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                </button>
+                <ul class="navigation-list" id="primary-navigation">
+                    <li><a href="../index.html#experience">Experience</a></li>
                     <li><a href="../index.html#projects">Projects</a></li>
                     <li><a class="is-active" href="../index.html#engineering-notes" aria-current="true">Engineering Notes</a></li>
+                    <li><a href="../index.html#about">About</a></li>
                     <li><a href="../index.html#tech-stack">Tech Stack</a></li>
                     <li><a href="../index.html#contact">Contact</a></li>
                 </ul>
@@ -26,7 +61,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main" tabindex="-1">
         <header class="note-article-header">
             <div class="content-wrap">
                 <a class="note-back-link" href="../index.html#engineering-notes">← Engineering Notes</a>
@@ -441,7 +476,10 @@
 
     <footer class="site-footer">
         <div class="content-wrap">
-            <p>Built by Kanishk Bhati</p>
+            <p>
+                Built by Kanishk Bhati ·
+                <a href="https://github.com/KKBhati07/KKBhati07.github.io" target="_blank" rel="noopener">source on GitHub</a>
+            </p>
         </div>
     </footer>
     <script src="../assets/js/script.js"></script>
