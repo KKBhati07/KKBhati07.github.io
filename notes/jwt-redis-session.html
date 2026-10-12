@@ -195,9 +195,12 @@
 
                 <p>
                     Treating a Redis miss as “logged out” would confuse cache behavior with authority.
-                    Absence from Redis might mean eviction, expiry, or a cold cache — PostgreSQL is still
-                    where validity is decided on fallback. I am not documenting here whether a successful
-                    PostgreSQL read repopulates Redis; that is an implementation detail outside this note.
+                    The JWT subject is the session id. After the signature and expiry check, that id is
+                    what the server looks up. If Redis has no usable entry, SpringMate reads the session
+                    from PostgreSQL. A missing or expired session is rejected. A session that PostgreSQL
+                    still accepts is written into Redis so the next lookup can use the cache. Absence from
+                    Redis can mean eviction, expiry, or a cold cache. It does not, by itself, mean the
+                    session row is gone.
                 </p>
 
                 <h2>Redis as a shared authentication layer</h2>
@@ -240,10 +243,11 @@
                 </div>
 
                 <p>
-                    Redis does not replace SpringMate as the auth authority, and it does not eliminate
-                    PostgreSQL. It handles the common validation path. When the session is not available in
-                    Redis, the source-of-truth fallback remains available — the same PostgreSQL-backed model
-                    SpringMate already owned.
+                    Redis does not replace SpringMate, and it does not replace PostgreSQL. On the common
+                    path, the chat service reads the same session cache. If that entry is missing or
+                    unusable, the chat service asks SpringMate to resolve the session. The chat service
+                    does not read the session table itself. SpringMate remains the service that checks the
+                    persisted session.
                 </p>
 
                 <h2>Redis isn’t just a cache</h2>
@@ -259,10 +263,9 @@
                     still respecting a real source of truth elsewhere.
                 </p>
                 <p>
-                    Server-side session control still matters: logout and invalidation are about updating the
-                    authoritative session state and what the cache reflects, not about pretending a JWT
-                    expiry is the only lever. Redis did not replace that idea; it changed where the frequent
-                    read happens.
+                    JWT validation checks the token's signature and expiry. The application also
+                    uses server-side session validation, with Redis providing a cache for session
+                    lookups and PostgreSQL maintaining persisted session state.
                 </p>
 
                 <h2>Trade-offs</h2>
