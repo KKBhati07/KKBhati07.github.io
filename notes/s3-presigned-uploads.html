@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How MarketMate uploads files directly to S3 with a short-lived presigned URL, retries the same upload, and falls back through the API when a profile image still has not landed.">
+    <title>S3 Presigned Uploads | Kanishk Bhati</title>
+    <link rel="canonical" href="https://kkbhati07.github.io/notes/s3-presigned-uploads.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Kanishk Bhati">
+    <meta property="og:title" content="S3 Presigned Uploads">
+    <meta property="og:description" content="How MarketMate uploads files directly to S3 with a short-lived presigned URL, retries the same upload, and falls back through the API when a profile image still has not landed.">
+    <meta property="og:url" content="https://kkbhati07.github.io/notes/s3-presigned-uploads.html">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="S3 Presigned Uploads">
+    <meta name="twitter:description" content="How MarketMate uploads files directly to S3 with a short-lived presigned URL, retries the same upload, and falls back through the API when a profile image still has not landed.">
+
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="../assets/favicon.svg" color="#0f766e">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <noscript>
+        <style>
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+
+            .nav-toggle {
+                display: none;
+            }
+        </style>
+    </noscript>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+        <div class="content-wrap">
+            <nav class="site-navigation" aria-label="Primary navigation">
+                <a class="brand-mark" href="../index.html">Kanishk Bhati</a>
+                <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-navigation" aria-label="Menu">
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="nav-toggle-bar" aria-hidden="true"></span>
+                </button>
+                <ul class="navigation-list" id="primary-navigation">
+                    <li><a href="../index.html#experience">Experience</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-active" href="../index.html#engineering-notes" aria-current="true">Engineering Notes</a></li>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#tech-stack">Tech Stack</a></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+        <header class="note-article-header">
+            <div class="content-wrap">
+                <a class="note-back-link" href="../index.html#engineering-notes">← Engineering Notes</a>
+                <p class="note-category">AWS &amp; Backend Architecture</p>
+                <h1>S3 Presigned Uploads</h1>
+                <p class="note-article-subtitle">
+                    Accepting an upload and carrying the file are different jobs. On MarketMate the API
+                    decides whether an upload is allowed, then the browser sends the bytes straight to S3.
+                </p>
+                <p class="note-article-meta">Engineering Note</p>
+            </div>
+        </header>
+
+        <article class="note-article-body section-block" style="border-bottom: 0;">
+            <div class="content-wrap note-article-content">
+                <h2>The problem</h2>
+                <p>
+                    Profile photos and listing images are not small JSON bodies. If SpringMate accepted the
+                    file on the API, every byte would enter the application process, sit in memory or on a
+                    temporary buffer, and leave again toward object storage. The service would pay for
+                    bandwidth and request time on work that is mostly copying.
+                </p>
+                <p>
+                    That cost scales with file size and with how many people upload at once. The API still
+                    has to know who is uploading, what kind of object it is, and which user or listing it
+                    belongs to. It does not have to be the pipe for the file.
+                </p>
+
+                <h2>The architecture</h2>
+                <p>
+                    MarketMate uses a presigned PUT. The browser asks SpringMate for permission. SpringMate
+                    checks that the caller is authenticated, that the batch is non-empty, and that each file
+                    has a name, a content type, and a directory it understands: profile images or listing
+                    images. It then creates an object key it owns — a new id plus the original extension,
+                    under that directory — and returns a URL signed for a PUT of that key.
+                </p>
+                <p>
+                    The signature is not a general pass to the bucket. It is permission for one PUT, for a
+                    configured window. The default in this service is fifteen minutes, and the signed request
+                    includes the content type the client must send. When that window ends, the URL should be
+                    rejected. A successful signature also does not mean the object is a valid image, or that
+                    the application has recorded it yet.
+                </p>
+
+                <div class="flow-diagram" role="img" aria-label="The browser asks SpringMate for a presigned URL, uploads the file directly to S3, then SpringMate stores the object key on the user or listing.">
+                    <p class="flow-title">Direct upload, then the application records the key</p>
+                    <div class="flow-step">Browser</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">SpringMate checks the request and signs a PUT</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">Browser uploads the file to S3</div>
+                    <div class="flow-arrow" aria-hidden="true">↓</div>
+                    <div class="flow-step">SpringMate stores the object key on the profile or listing</div>
+                </div>
+
+                <p>
+                    There is no completion callback from S3. After the PUT succeeds, the client makes a
+                    normal API call. For a profile photo that call saves the object key on the user. For a
+                    new listing it sends the keys with the listing itself, and the API accepts a listing
+                    image key only when it sits under the listings prefix. If saving those listing images
+                    fails, the service deletes the keys it had already accepted for that request.
+                </p>
+                <p>
+                    Replacing a profile image also deletes the previous object. The database is what says
+                    which object is current. S3 is where the bytes live.
+                </p>
+
+                <h2>Why the file no longer goes through the API</h2>
+                <p>
+                    On the common path the application server never reads the file. It authorizes the
+                    operation, names the object, and later stores that name. Bandwidth for the upload is
+                    between the browser and S3.
+                </p>
+                <p>
+                    I am not treating that as a measured speedup. The repository does not contain timings
+                    for this path. The gain is structural: request threads are no longer occupied copying
+                    image bytes, and the API process is no longer in the middle of that transfer.
+                </p>
+                <p>
+                    The backend still owns the decisions that make the object mean something. It chooses
+                    the key, limits how long the URL works, and only then attaches the key to a user or a
+                    listing. The presign request requires a content type, and the browser has to repeat that
+                    content type on the PUT, because the signature was made for it. The direct path does not
+                    apply the multipart size limit used when a file is posted to the API. A presigned URL is
+                    not a substitute for deciding what you are willing to store.
+                </p>
+
+                <h2>Retry, expiry, and fallback</h2>
+                <p>
+                    A failed PUT is not always a reason to give up, and it is not always a reason to send
+                    the file through the API. Those are different recoveries.
+                </p>
+                <p>
+                    The browser retries the same PUT up to three more times, with a short increasing delay
+                    and a little jitter. It reuses the URL it already has. That matters because the object
+                    key was chosen when the URL was signed. Writing that same key again replaces one object.
+                    Asking for a new signature would mint a new key and could leave the first object behind
+                    if anything had already been stored.
+                </p>
+                <p>
+                    Those retries are for a transfer that might have blipped. They do not refresh an expired
+                    signature. If S3 rejects the URL because the window has passed, repeating it will keep
+                    failing. The client does not request a new presigned URL in that case.
+                </p>
+                <p>
+                    Profile images have a second path, and it runs only after those retries fail. The client
+                    asks whether the object is already in the bucket. If it is, the PUT likely succeeded and
+                    the response was lost, so the app keeps that key and saves it on the user. If it is not,
+                    the browser posts the file to the API and SpringMate uploads it. The server generates
+                    the key on that path, stores it on the profile, and the client reloads the user instead
+                    of saving the original key. If the existence check itself fails, the client still attempts
+                    that API upload rather than assuming the object is missing or present.
+                </p>
+                <p>
+                    When the file does go through the API, that server-side put is retried. If it still
+                    fails, the profile update fails. There is no second bucket.
+                </p>
+                <p>
+                    Listing publish uses the same direct PUT and the same client retries. If that fails, the
+                    form reports the error and does not create the listing. The API has a listing-image
+                    fallback, but the publish form does not call it. I do not want the note to imply that
+                    every failed upload in MarketMate falls back through the backend. Today that fallback is
+                    the profile flow.
+                </p>
+
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>Retry the same PUT</h3>
+                        <p>
+                            Same URL, same object key. Fits a dropped connection or a brief S3 error while
+                            the signature is still valid. Does not help once the URL has expired.
+                        </p>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>API fallback</h3>
+                        <p>
+                            Used for profile images after the direct upload has failed and the object is not
+                            already stored. The API carries the bytes. Listing publish does not take this
+                            path.
+                        </p>
+                    </div>
+                </div>
+
+                <h2>Trade-offs</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <h3>Upload through the API</h3>
+                        <ul>
+                            <li>One request can authorize, store, and record the object</li>
+                            <li>Size limits and failure handling sit in one place</li>
+                            <li>No expired-URL case for the client to reason about</li>
+                        </ul>
+                        <p>
+                            The cost is that the application copies every byte, and upload traffic competes
+                            with the rest of the API.
+                        </p>
+                    </div>
+                    <div class="comparison-panel">
+                        <h3>Presigned PUT, then record the key</h3>
+                        <ul>
+                            <li>File bytes skip the application process</li>
+                            <li>The API still names the object and attaches it</li>
+                            <li>A lost response can be told apart from a missing object, on the profile path</li>
+                            <li>The same URL can be retried without creating a second key</li>
+                        </ul>
+                        <p>
+                            The cost is more steps, a signature that expires, and a gap between “S3 accepted
+                            the bytes” and “the database points at them.” A listing image that never gets
+                            recorded is cleaned up when image processing fails. An object uploaded and then
+                            abandoned before that call is not automatically removed.
+                        </p>
+                    </div>
+                </div>
+                <p>
+                    Direct upload is the better default here because images are the bulky part and the API
+                    already has a separate write for the user or the listing. It is a worse default if you
+                    need the file and the database row to succeed or fail as one action, or if you are not
+                    prepared to handle an expired URL and a half-finished upload.
+                </p>
+
+                <div class="note-related-project comparison-panel">
+                    <h3>Related Project</h3>
+                    <p>
+                        <a href="../index.html#marketmate"><strong>MarketMate — Distributed Marketplace Platform</strong></a>
+                    </p>
+                    <p>
+                        <a href="../index.html#marketmate">Explore the project →</a>
+                    </p>
+                </div>
+
+                <h2>What I took away</h2>
+                <p>
+                    The useful split was not “put files in S3.” It was keeping authorization, object
+                    identity, and the database record on the API, and letting the file transfer happen
+                    somewhere else. Retries belong on that transfer, against the key you already signed.
+                    Falling back through the API is a different decision, and in this system it is a profile
+                    recovery path, not the behavior of every upload.
+                </p>
+
+                <footer class="note-article-footer">
+                    <a class="note-back-link" href="../index.html#engineering-notes">← Back to Engineering Notes</a>
+                </footer>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="content-wrap">
+            <p>
+                Built by Kanishk Bhati ·
+                <a href="https://github.com/KKBhati07/KKBhati07.github.io" target="_blank" rel="noopener">source on GitHub</a>
+            </p>
+        </div>
+    </footer>
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>
